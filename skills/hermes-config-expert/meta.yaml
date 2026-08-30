@@ -1,0 +1,10 @@
+name: hermes-config-expert
+title: "🤖⚙️ hermes-config-expert"
+summary_zh: "严格、可验证、可回滚的 Hermes Agent 配置工作流规范"
+summary_en: "Strict, verifiable, and rollback-safe Hermes Agent configuration workflow"
+status: active
+version: "1.0"
+upstream_repo: ""
+source_repo: "https://github.com/Hawaiine/hermes-config-expert"
+last_updated: "2026-07"
+tags: [hermes, configuration, provider, mcp, security]

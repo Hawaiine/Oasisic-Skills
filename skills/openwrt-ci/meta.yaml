@@ -1,0 +1,10 @@
+name: openwrt-ci
+title: "🏗️ openwrt-ci"
+summary_zh: "OpenWrt 固件 CI/CD 最佳实践与可复用模板"
+summary_en: "OpenWrt firmware CI/CD best practices and reusable templates"
+status: active
+version: "2.0.0"
+upstream_repo: "https://github.com/Hawaiine/oasisic-openwrt"
+source_repo: "https://github.com/Hawaiine/openwrt-ci-skill"
+last_updated: "2026-07"
+tags: [openwrt, ci, firmware, github-actions, nikki]
