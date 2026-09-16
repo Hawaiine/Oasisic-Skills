@@ -15,12 +15,16 @@ scripts:
   - scripts/probe.py     # Canonical detection probe (4 targets)
 references:
   - references/test-targets.md   # Detection site reference with recorded baseline
-version: 2
+version: 2.0.0
 ---
 
 # Stealth Browser Automation
 
 Source-level patched Chromium for sites that detect or block Playwright / Puppeteer / Selenium. The standard stack is **CloakBrowser** (`pip install cloakbrowser` → ~206MB stealth Chromium binary). Patches are compiled into the C++, not injected at runtime, so detection sites see a real browser because it *is* a real browser.
+
+This file is the single agent-facing knowledge source for this skill. Humans start at [`README.md`](./README.md) (bilingual walkthrough); agents read this file top-to-bottom.
+
+Key framing: a datacenter IP is like wearing a suit to a nightclub — presentable but obviously out of place. CF will 403 you at the IP layer before your browser ever gets to show its fingerprints. **Diagnose first, tune second.**
 
 ## Why CloakBrowser over the alternatives
 
@@ -39,7 +43,7 @@ If a session uses `playwright-stealth` and gets blocked, switch to CloakBrowser 
 
 ```python
 from cloakbrowser import launch
-browser = launch()                          # auto-downloads binary on first run
+browser = launch(humanize=True)             # auto-downloads binary on first run
 page = browser.new_page()
 page.goto("https://target.com")
 browser.close()
@@ -90,7 +94,20 @@ curl -s "https://ipinfo.io/$(curl -s https://api.ipify.org)/json"
 
 When `has_iframe: false` and the response is 403, **stop touching CloakBrowser**. CF refused to even run the challenge. The only fix is a different egress IP (tier-2 proxy, residential routing, etc.).
 
+| Signal | IP-layer block | Challenge-layer block |
+|---|---|---|
+| HTTP status | 403 | 403 (often) or 200 stuck on challenge |
+| `cf-mitigated` header | `challenge` | `challenge` |
+| Turnstile iframe in DOM | **absent** | **present** |
+| Repeat behavior | Identical 403 every time, no variance | Sometimes succeeds, varies with humanize/timing |
+| Ray ID | Present | Present |
+| What helps | Different egress IP (residential proxy / SSH SOCKS5 to home) | Tweak headed/humanize/cookies |
+
+If the iframe is absent, **no amount of CloakBrowser tuning will help**. Stop and switch egress.
+
 ## Pitfalls discovered in real testing
+
+Ordered roughly by how often they bite.
 
 - **`Browser Tampering: Yes 🖥️🔧` on FingerprintJS** even when `Bot: Not detected`. The C++ patches *are* visible to fingerprint.com's tampering heuristic. Bot-score-only sites pass; sites that gate on tampering will reject. Mitigation: tier-2 (proxy + geoip) sometimes resolves; otherwise no clean fix today.
 - **Datacenter IP → CF 403 even on tier-1.** A nopecha CF demo returned `HTTP 403, Ray ID …, Performing security verification` despite clean fingerprints. ISP/ASN is part of the score. Don't blame the patches; bring a residential proxy. Confirm with the diagnose step above.
@@ -130,7 +147,7 @@ Tier-2 needs residential egress. Before paying for BrightData / Smartproxy / IPR
 
 ## Verification probe
 
-A ready-to-run probe lives at `scripts/probe.py` — runs the stealth browser against four canonical detection sites (CF + nodriver, FingerprintJS demo, BrowserScan, Cloudflare Turnstile demo), saves screenshots + JSON results, and uses both HTTP status and body-text heuristics to call PASS/FAIL. Run it whenever:
+A ready-to-run probe lives at [`scripts/probe.py`](./scripts/probe.py) — runs the stealth browser against four canonical detection sites (CF + nodriver, FingerprintJS demo, BrowserScan, Cloudflare Turnstile demo), saves screenshots + JSON results, and uses both HTTP status and body-text heuristics to call PASS/FAIL. Run it whenever:
 - Validating a fresh install
 - Sanity-checking after a CloakBrowser version bump
 - Diagnosing whether a target failure is fingerprint-side or IP-side (probe nowsecure.nl alone — if that fails too, install is broken; if only the user's target fails, it's IP/behavior, go tier-2)
@@ -146,6 +163,7 @@ XVFB=1 xvfb-run -a python scripts/probe.py  # headed
 - **Sign-in / check-in flows that expose a JSON API** → use a direct API approach (e.g. `web-signin-cron-jobs` or `website-checkin-automation` skills if you're on Hermes). Hitting the API directly with a session cookie is faster, idempotent, and doesn't need a 200MB browser.
 - **CAPTCHA solving** — CloakBrowser prevents CAPTCHAs from appearing, it doesn't solve them. If a CAPTCHA still shows, you need a solver (2captcha, capsolver) downstream.
 - **Pure HTTP scraping** of unprotected JSON endpoints — `curl`/`httpx` is enough. Don't reach for a stealth browser if the site has no JS challenge.
+- **DataDome, Kasada, 极验 GeeTest, PerimeterX** — headed + residential is *necessary but not always sufficient*. Plan for a fallback: solver service or human-in-the-loop.
 
 ## Supplementary targets (not in probe, for deeper diagnosis)
 
