@@ -20,7 +20,7 @@ custom_providers:
 AGNES_API_KEY=<your-key>
 ```
 
-Path: `$HERMES_HOME/.env` (typically `/opt/data/.env` or `~/.hermes/.env`)
+Path: `$HERMES_HOME/.env` (typically `/opt/data/.env`)
 
 ## Env Var Convention
 

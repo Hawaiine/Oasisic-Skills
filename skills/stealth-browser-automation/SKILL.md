@@ -10,7 +10,7 @@ when_to_use:
   - User asks "can X bypass CF" / "how do I scrape this protected site" / mentions a stealth-browser tool.
   - Existing automation works locally but breaks on CI / VPS due to headless detection.
   - Need a drop-in replacement for `playwright-stealth`, `undetected-chromedriver`, `puppeteer-extra-plugin-stealth` that doesn't break on every Chrome update.
-source: https://github.com/Hawaiine/stealth-browser-skill
+source: https://github.com/Hawaiine/Oasisic-Skills
 scripts:
   - scripts/probe.py     # Canonical detection probe (4 targets)
 references:

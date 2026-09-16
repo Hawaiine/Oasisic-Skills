@@ -1,5 +1,5 @@
 ---
-name: openwrt-ci-skill
+name: openwrt-ci
 description: "Use when maintaining OpenWrt firmware CI/CD (GitHub Actions SDK builds, feeds pin, last_build dedupe, QEMU smoke, Release/minisign) — especially Hawaiine/oasisic-openwrt style pipelines. Encodes OpenWrt ; vs ^ feeds syntax, dispatch force_build/nikki_ref, and verified failure/success runs."
 version: 2.0.0
 author: Hermes Agent

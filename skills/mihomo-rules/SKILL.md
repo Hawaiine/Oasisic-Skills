@@ -25,10 +25,10 @@ tags: [proxy, mihomo, clash-meta, ruleset, nikki, android, ci]
 
 | 说法 | 正确 |
 |------|------|
-| 业务品牌 | **100** |
-| 兜底规则集 | **7**（Reject, Direct, Proxy, Applications, Private, LanCIDR, CNCIDR） |
-| 规则集合计 | **107**（100+7） |
-| 禁止 | 「106 品牌」「105 品牌」 |
+| 业务品牌 | **116** |
+| 兜底规则集 | **9**（DirectDNS, ProxyDNS, Reject, Direct, Proxy, Applications, Private, LanCIDR, CNCIDR） |
+| 规则集合计 | **125**（116+9） |
+| 禁止 | 「100 品牌」「107 规则集」「106 品牌」「105 品牌」 |
 
 规则总条数随日更变（约 32 万+ payload 行）；文档写「约 32 万+」，Discord 用实时扫描。
 
@@ -36,7 +36,7 @@ tags: [proxy, mihomo, clash-meta, ruleset, nikki, android, ci]
 
 ```
 mihomo-rules/
-├── ruleset/<Brand>/<Brand>.yaml + README.md   # 107 目录，每目录仅允许这两个相关文件
+├── ruleset/<Brand>/<Brand>.yaml + README.md   # 125 目录，每目录仅允许这两个相关文件
 ├── configs/
 │   ├── Android/{config.yaml, config.min.yaml, README.md}
 │   └── Nikki/{config.yaml, config.min.yaml, README.md}
@@ -156,6 +156,15 @@ MATCH,🐟 漏网之鱼
 
 生成：`gen_proxy_groups` / `gen_rule_providers` 的 `blank_between`；`assemble_config`。
 
+### 品牌排序规范（`sort_brands()`）
+
+- 全局按 **`(-depth, provider_key)`** 排序：depth 大的（子品牌）在前，同 depth 按字母序
+- 计算方式：沿 `SUB_PARENT` 链向上计数，`AppleTV→Apple→0`，`iCloudPrivateRelay→iCloud→Apple→0`
+- `LAST_BRANDS = {'Cloudflare'}` 置底（含 IP-CIDR，避免截胡其他品牌域名规则）
+- **三处一致**：`rule-providers`、`proxy-groups`、RULE-SET 注释 的 Cloudflare 必须同位置
+- `gen_rule_providers()` **禁止** `sorted(brand_info)`，必须保持 `sort_brands()` 传入顺序
+- 新增品牌只需在 `SUB_PARENT` / `STRATEGY_GROUP_MAP` 登记，`generate_config.py` 自动插入正确位置
+
 ## Python 日更管线
 
 ### 入口
@@ -200,7 +209,7 @@ python3 scripts/batch_update.py --notify skip --noise-restored N
 python3 scripts/batch_update.py --notify pushed --commit-sha SHA
 ```
 
-- `collect_repo_stats()`：100 品牌 / 107 规则集 / **全库** rules_total（含兜底）  
+- `collect_repo_stats()`：116 品牌 / 125 规则集 / **全库** rules_total（含兜底）  
 - push 卡 ± 规则、config 变更：优先 **`HEAD~1..HEAD`**（提交后工作区干净）  
 - 无 WEBHOOK：静默 return，不崩流水线  
 
@@ -208,7 +217,7 @@ python3 scripts/batch_update.py --notify pushed --commit-sha SHA
 
 ```bash
 python3 scripts/verify_configs.py    # 4/4 PASS，失败 exit 1
-python3 scripts/verify_rulesets.py   # 106 PASS，失败 exit 1
+python3 scripts/verify_rulesets.py   # 125 PASS，失败 exit 1
 python3 scripts/generate_config.py   # 幂等应 [=] 跳过
 python3 -m py_compile scripts/*.py scripts/lib/*.py
 ```
@@ -230,7 +239,7 @@ verify_configs 要点：rules 键与空行约定、系统组顺序、SUB_PARENT�
 2. **behavior 标 domain** 但 payload 是 `TYPE,value` → 违反官方格式  
 3. **f-string 过度转义** 生成 `\"🎯` → 品牌组全球直连坏掉（已修 gen_proxy_groups）  
 4. **CI 先 success 通知再滤噪跳过提交** → 已改为滤噪后 notify  
-5. **rules_total 只计 100 品牌** → 卡片假小数；须含 7 兜底  
+5. **rules_total 只计 116 品牌** → 卡片假小数；须含 9 兜底  
 6. **notify_pushed 用工作区 git diff** → 提交后 ± 恒 0；须 HEAD~1..HEAD  
 7. **拦截组指全球直连** → 无 REJECT，广告拦不住  
 8. **全球直连 ↔ 手动切换互相指向** → 环；全球直连只允许 DIRECT  
@@ -239,7 +248,7 @@ verify_configs 要点：rules 键与空行约定、系统组顺序、SUB_PARENT�
 
 ## 提交前清单
 
-- [ ] `verify_configs` 4/4、`verify_rulesets` 107  
+- [ ] `verify_configs` 4/4、`verify_rulesets` 125  
 - [ ] 无 `behavior: domain`（configs + README）  
 - [ ] 无 `\"🎯` 错误转义  
 - [ ] full/min 空行约定；21 地区 provider↔组成对  

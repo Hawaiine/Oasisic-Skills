@@ -17,14 +17,16 @@
 ## 📁 文件结构
 
 ```
-hermes-config-expert/
+skills/hermes-config-expert/
 ├── README.md                          👈 本文件
-├── SKILL.md                           👈 核心：配置专家 System Prompt（1737 行）
+├── SKILL.md                           👈 核心：配置专家 System Prompt（1739 行）
+├── meta.yaml                          👈 根 README 脚本读取的元数据
 └── references/                        👈 典型 Provider 配置示例
     ├── sensenova-custom-provider.md   # 自定义 Provider + 多 Key 凭证池
     ├── agnes-ai-custom-provider.md    # 单 Key Provider + .env 自动发现
     ├── firecrawl-mcp-setup.md         # MCP Server 集成
-    └── model-speed-testing.md         # 模型延迟基准测试
+    ├── model-speed-testing.md         # 模型延迟基准测试
+    └── discord-home-channel.md        # Discord 默认投递频道
 ```
 
 ---
@@ -53,8 +55,8 @@ hermes-config-expert/
 将 `SKILL.md` 放入 Hermes skills 目录：
 
 ```bash
-mkdir -p $HERMES_HOME/skills/hermes-configuration
-cp SKILL.md $HERMES_HOME/skills/hermes-configuration/SKILL.md
+mkdir -p $HERMES_HOME/skills/hermes-config-expert
+cp SKILL.md $HERMES_HOME/skills/hermes-config-expert/SKILL.md
 ```
 
 之后 Hermes Agent 在涉及 Provider、Model、config.yaml 等配置相关任务时会自动加载此 skill。

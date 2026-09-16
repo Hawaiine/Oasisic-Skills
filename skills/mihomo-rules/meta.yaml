@@ -3,8 +3,8 @@ title: "📖 mihomo-rules"
 summary_zh: "mihomo/clash-meta RULE-SET 规则集仓库维护知识库"
 summary_en: "Maintenance knowledge base for the mihomo/clash-meta RULE-SET repo"
 status: active
-version: "3.0"
+version: "3.0.0"
 upstream_repo: "https://github.com/Hawaiine/mihomo-rules"
-source_repo: "https://github.com/Hawaiine/mihomo-rules-skill"
-last_updated: "2026-07"
-tags: [networking, proxy, ruleset, ci, python]
+source_note: "原独立仓库 mihomo-rules-skill 已删除，本目录为唯一归档"
+last_updated: "2026-09"
+tags: [networking, proxy, ruleset, ci, python, sub-brand]

@@ -5,6 +5,6 @@ summary_en: "OpenWrt firmware CI/CD best practices and reusable templates"
 status: active
 version: "2.0.0"
 upstream_repo: "https://github.com/Hawaiine/oasisic-openwrt"
-source_repo: "https://github.com/Hawaiine/openwrt-ci-skill"
-last_updated: "2026-07"
+source_note: "原独立仓库 openwrt-ci-skill 已删除，本目录为唯一归档"
+last_updated: "2026-09"
 tags: [openwrt, ci, firmware, github-actions, nikki]

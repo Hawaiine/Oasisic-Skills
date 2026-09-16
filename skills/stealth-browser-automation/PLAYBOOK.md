@@ -7,7 +7,7 @@ Single-file playbook for any AI coding agent (Claude Code, Cursor, OpenCode, Aid
 >
 > **关键认知：** 数据中心 IP 像穿西装去夜店 —— 衣冠楚楚但一眼假。CF 在 IP 那一层就把你 403 了，根本不会让你的浏览器有机会展示指纹。**先诊断再调参。**
 
-The repo it lives in: <https://github.com/Hawaiine/stealth-browser-skill>
+The repo it lives in: <https://github.com/Hawaiine/Oasisic-Skills/tree/main/skills/stealth-browser-automation>
 
 ---
 

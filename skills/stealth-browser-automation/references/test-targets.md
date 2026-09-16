@@ -1,6 +1,6 @@
 # Canonical Detection Sites
 
-This repo is part of [stealth-browser-skill](https://github.com/Hawaiine/stealth-browser-skill).
+This repo is part of [Oasisic-Skills](https://github.com/Hawaiine/Oasisic-Skills).
 
 Use these targets to triangulate *what* is failing when a real-world site blocks you. Each tells you something different about the stack.
 

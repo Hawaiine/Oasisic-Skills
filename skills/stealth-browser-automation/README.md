@@ -41,21 +41,20 @@ CloakBrowser 暴露的是 **Playwright 兼容 API**，已有 Playwright 代码�
 ### 🏗️ 仓库结构
 
 ```
-.
+skills/stealth-browser-automation/
 ├── 📖 README.md                         ← 你正在看
 │   （中英双语 · 带表情包 · 上手教程）
 ├── 📄 PLAYBOOK.md                       ← 单文件 agent 手册
 │   （给 Claude Code / Cursor / 任何 AI Agent 直接消费）
-├── 📜 LICENSE                            ← MIT
+├── 🐳 docker/
+│   ├── Dockerfile                       ← 多阶段构建（~600MB，含 CloakBrowser）
+│   ├── .dockerignore
+│   └── .env.example                     ← 环境变量样例
 ├── 🧪 scripts/
 │   └── probe.py                         ← 四站检测探针
 ├── 📚 references/
 │   └── test-targets.md                  ← 检测站点详解 + 基线
-└── 🧩 skills/
-    └── stealth-browser-automation/       ← Hermes Agent skill 格式
-        ├── SKILL.md
-        ├── references/test-targets.md
-        └── scripts/probe.py
+└── meta.yaml                            ← 根 README 脚本读取的元数据
 ```
 
 ### 🎮 快速上手
@@ -163,7 +162,7 @@ curl -s "https://ipinfo.io/$(curl -s https://api.ipify.org)/json" | jq .org
 
 | Agent | 用法 |
 |-------|------|
-| **Hermes Agent** | `cp -r skills/stealth-browser-automation ~/.skills/devops/` |
+| **Hermes Agent** | `cp -r skills/stealth-browser-automation $HERMES_HOME/skills/devops/`（仓库根目录执行） |
 | **Claude Code / Cursor / Aider** | 把 `PLAYBOOK.md` 喂给 agent，或 `cp PLAYBOOK.md .claude/stealth-browser.md` |
 | **任何平台** | `docker run --rm stealth-browser` 直跑探针，无需装 Python |
 
@@ -287,7 +286,7 @@ Check DOM for CF iframe
 
 | Agent | How |
 |-------|-----|
-| **Hermes Agent** | `cp -r skills/stealth-browser-automation ~/.skills/devops/` |
+| **Hermes Agent** | `cp -r skills/stealth-browser-automation $HERMES_HOME/skills/devops/`（仓库根目录执行） |
 | **Claude Code / Cursor / OpenCode / Aider** | Feed `PLAYBOOK.md` as context |
 | **Any platform** | `docker run --rm stealth-browser` — zero setup |
 

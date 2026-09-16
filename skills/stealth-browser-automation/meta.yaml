@@ -3,8 +3,8 @@ title: "🥷 stealth-browser-automation"
 summary_zh: "反爬虫隐身浏览器实战手册：源码级补丁 Chromium 突破 Cloudflare/Turnstile/FingerprintJS"
 summary_en: "Anti-bot stealth browser playbook: source-patched Chromium for Cloudflare/Turnstile/FingerprintJS"
 status: active
-version: "2"
+version: "2.0.0"
 upstream_repo: ""
-source_repo: "https://github.com/Hawaiine/stealth-browser-skill"
-last_updated: "2026-07"
+source_note: "原独立仓库 stealth-browser-skill 已删除，本目录为唯一归档"
+last_updated: "2026-09"
 tags: [browser, automation, scraping, anti-bot, cloudflare]
