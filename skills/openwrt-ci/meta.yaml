@@ -1,4 +1,5 @@
 name: openwrt-ci
+short_name: "OpenWrt 固件 CI"
 title: "🏗️ openwrt-ci"
 summary_zh: "OpenWrt 固件 CI/CD 最佳实践与可复用模板"
 summary_en: "OpenWrt firmware CI/CD best practices and reusable templates"

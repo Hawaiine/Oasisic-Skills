@@ -1,4 +1,5 @@
 name: hermes-config-expert
+short_name: "Hermes 配置"
 title: "🤖⚙️ hermes-config-expert"
 summary_zh: "严格、可验证、可回滚的 Hermes Agent 配置工作流规范"
 summary_en: "Strict, verifiable, and rollback-safe Hermes Agent configuration workflow"

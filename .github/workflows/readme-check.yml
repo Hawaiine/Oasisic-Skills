@@ -1,0 +1,27 @@
+name: README Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install --quiet pyyaml
+      - name: Regenerate README and description
+        run: python scripts/generate-readme.py
+      - name: Verify generated files are in sync
+        run: |
+          if [ -n "$(git diff -- README.md .github/description.txt)" ]; then
+            echo '::error::README.md 或 .github/description.txt 与 skills/*/meta.yaml 不同步，请本地运行 python scripts/generate-readme.py 后一并提交'
+            exit 1
+          fi
+          echo 'README 与 skills/*/meta.yaml 同步 ✅'

@@ -1,4 +1,5 @@
 name: stealth-browser-automation
+short_name: "反爬浏览器"
 title: "🥷 stealth-browser-automation"
 summary_zh: "反爬虫隐身浏览器实战手册：源码级补丁 Chromium 突破 Cloudflare/Turnstile/FingerprintJS"
 summary_en: "Anti-bot stealth browser playbook: source-patched Chromium for Cloudflare/Turnstile/FingerprintJS"
