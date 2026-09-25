@@ -38,7 +38,7 @@ skills/hermes-config-expert/
 | 🔍 | **官方文档优先** | 任何配置前必须查询最新版 Hermes 官方文档 + 第三方 Provider 官方文档 |
 | 📋 | **环境自动发现** | 不假设路径，不写死配置。每次执行 `echo $HERMES_HOME` / `hermes profile` 确认 |
 | 💾 | **备份先行** | 修改前 **三个文件（config.yaml / auth.json / .env）** 共用北京时间戳备份 |
-| ⚡ | **CLI 优先** | 能用 CLI 绝不手动编辑。**例外**：`custom_providers` 禁止 CLI 写入（会序列化为字符串） |
+| ⚡ | **CLI 优先** | 能用 CLI 绝不手动编辑。**例外**：整个 `providers` 复合结构禁止用 `hermes config set` 一次写入（可能被序列化成字符串） |
 | ✅ | **一步一验证** | 每次修改后立即：config check → YAML 校验 → JSON 校验 → API Probe → hermes model |
 | 🔄 | **可回滚** | 验证失败立即回滚到最新备份，再次验证确认恢复 |
 | 🧹 | **清理临时文件** | 验证全部通过后主动清理本次任务产生的临时脚本 |
@@ -73,7 +73,8 @@ cp SKILL.md $HERMES_HOME/skills/hermes-config-expert/SKILL.md
 **自定义 Provider + 多 Key 凭证池模式**
 
 配置要点：
-- `custom_providers` 手动编辑，禁止 CLI 写入
+- 使用当前官方 `providers:` 字典；旧 `custom_providers:` 列表仍可运行，但不是新增配置的推荐格式
+- 字段映射：`base_url → api`、`api_mode → transport`、`model → default_model`；模型 `id` 和显示名必须保留
 - 凭证池使用 `custom:<name>` 作为 key
 - `credential_pool_strategies` 使用 **裸名**（不带 `custom:` 前缀）—— 这是 Hermes 的设计不对称，不是错误
 

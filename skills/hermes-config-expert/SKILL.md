@@ -203,8 +203,9 @@ auth.json    ← 凭证池（各 provider 的 API Key 列表）
 数据流向（修改时必须保持四处一致）：
 
 ```
-custom_providers（config.yaml）
-  └─ 定义 provider 的 name + base_url + 默认 model
+providers（config.yaml，当前官方格式）
+  └─ 定义 provider key + api + transport + models/default_model
+       （旧 custom_providers list 仍被运行时读取，但不是当前推荐格式）
        ↓
 model.provider（config.yaml）
   └─ 引用格式：custom:<name>
@@ -342,42 +343,46 @@ auth.json
 .env
 
 --------------------------------------------------
-# custom_providers 特殊规则
+# providers 特殊规则（自定义端点）
 --------------------------------------------------
 
-禁止使用 CLI 写入 custom_providers：
+当前官方格式是 `providers:` 字典。新增自定义端点时使用它，
+不要再新增旧式 `custom_providers:` 列表项。
 
-hermes config set custom_providers   ← 禁止
-
-原因：CLI 会将整个 YAML List 序列化为转义字符串，Hermes 无法识别。
-
-错误结果示例（CLI 写入后的实际效果）：
+官方依据：
+https://hermes-agent.nousresearch.com/docs/integrations/providers#named-custom-providers
 
 ```yaml
-# 错误：变成了字符串，Hermes 不识别
-custom_providers: "[{name: sensenova, base_url: ...}]"
+providers:
+  <provider-key>:
+    name: <provider-name>
+    api: <api-endpoint>          # 必须来自该 Provider 官方文档
+    api_key: ${PROVIDER_API_KEY} # 或 key_env / key_cmd；禁止写明文 key
+    default_model: <model-id>    # 可选；运行时可用 -m 覆盖
+    models:                      # 可选；保留每个模型的 id 与显示名
+      - id: <model-id>
+        name: <display-name>
+    transport: chat_completions  # chat_completions / anthropic_messages / codex_responses
 ```
 
-必须直接手动编辑 config.yaml，保持标准 YAML List 格式：
+字段映射（旧 → 当前）：
 
-```yaml
-# 正确
-custom_providers:
-  - name: <provider-name>
-    base_url: <api-endpoint>   # 必须从该 Provider 官方文档确认最新地址
-    model: <default-model>     # 必须从该 Provider 官方文档确认可用模型名称
-```
+- `name` → `providers` 的字典键；条目里的 `name` 可作为显示名保留
+- `base_url` → `api`（`base_url` / `url` 仍是兼容别名）
+- `api_mode` → `transport`
+- `model` → `default_model`
+- `models[].id` / `models[].name`：手工转换时必须原样保留
 
-字段说明：
+兼容规则：
 
-- name：Provider 标识符，须与 model.provider（custom:`<name>`）
-         和 credential_pool_strategies（裸名）保持一致
-- base_url：该 Provider 的 API 地址，由此接管请求路由
-            必须从 Provider 官方文档获取，禁止凭记忆填写
-- model：该 Provider 的默认模型；运行时可用 -m 覆盖
+- 旧 `custom_providers:` 列表仍可被 Hermes 读取，不是无效配置。
+- 没有对应 `providers:` 项时，`hermes doctor` 会警告该旧条目。
+- v12 的自动迁移只在配置版本升级经过 v12 时执行一次。
+  `_config_version` 已高于 12 后，`hermes config migrate` 不会再自动搬走后来手工加入的旧条目。
+- 同一个 Endpoint 只用一个 provider 条目，其多个模型放在 `models` 中；禁止为同一 Endpoint 重复创建条目。
 
-同一个 Endpoint 下的多个模型共用一个 custom_provider 条目，
-禁止为同一 Endpoint 重复创建多个 custom_provider。
+禁止用 `hermes config set` 一次写入整个 `providers` 或旧 `custom_providers` 复合结构。
+CLI 可能把 YAML 列表/字典序列化成字符串。复合结构必须手动编辑，写入前用 `yaml.safe_load()` 校验。
 
 --------------------------------------------------
 # model 块配置
@@ -1361,7 +1366,7 @@ Hermes Agent 的上下文窗口（对话历史）有长度限制。
 
 **添加 custom_provider 前：**
 
-检查 config.yaml 中 custom_providers 列表内是否已有同名条目。
+检查 config.yaml 的 `providers:` 字典，以及仍存在的旧 `custom_providers:` 列表，确认没有同名或同一 Endpoint 条目。
 已存在 → 告知用户，询问是更新现有条目还是新增。
 禁止静默创建重复条目。
 
@@ -1394,7 +1399,8 @@ Hermes Agent 的上下文窗口（对话历史）有长度限制。
 
 | 位置 | 操作 |
 |:---|:---|
-| config.yaml → custom_providers | 删除对应的 list 条目 |
+| config.yaml → providers | 删除对应的字典条目 |
+| config.yaml → custom_providers | 如果旧列表仍有同名条目，一并删除 |
 | config.yaml → model.provider | 如果指向被删除的 provider，必须更新为新的 provider |
 | config.yaml → credential_pool_strategies | 删除对应的裸名条目 |
 | config.yaml → fallback_providers | 删除所有引用该 provider 的条目 |
