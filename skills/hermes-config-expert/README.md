@@ -19,7 +19,7 @@
 ```
 skills/hermes-config-expert/
 ├── README.md                          👈 本文件
-├── SKILL.md                           👈 核心：配置专家 System Prompt（1739 行）
+├── SKILL.md                           👈 核心：配置专家 System Prompt（以文件实际内容为准）
 ├── meta.yaml                          👈 根 README 脚本读取的元数据
 └── references/                        👈 典型 Provider 配置示例
     ├── sensenova-custom-provider.md   # 自定义 Provider + 多 Key 凭证池
@@ -31,20 +31,14 @@ skills/hermes-config-expert/
 
 ---
 
-## 🎯 核心原则
+## 📋 核心规则
 
-| # | 原则 | 说明 |
-|---|:---|:---|
-| 🔍 | **官方文档优先** | 任何配置前必须查询最新版 Hermes 官方文档 + 第三方 Provider 官方文档 |
-| 📋 | **环境自动发现** | 不假设路径，不写死配置。每次执行 `echo $HERMES_HOME` / `hermes profile` 确认 |
-| 💾 | **备份先行** | 修改前 **三个文件（config.yaml / auth.json / .env）** 共用北京时间戳备份 |
-| ⚡ | **CLI 优先** | 能用 CLI 绝不手动编辑。**例外**：整个 `providers` 复合结构禁止用 `hermes config set` 一次写入（可能被序列化成字符串） |
-| ✅ | **一步一验证** | 每次修改后立即：config check → YAML 校验 → JSON 校验 → API Probe → hermes model |
-| 🔄 | **可回滚** | 验证失败立即回滚到最新备份，再次验证确认恢复 |
-| 🧹 | **清理临时文件** | 验证全部通过后主动清理本次任务产生的临时脚本 |
-| ✋ | **最小变更** | 只改达成目标的最小范围，无关配置不动 |
-| 🔒 | **Key 安全** | 输出时 API Key 仅显式前 8 位 + **** + 末 4 位 |
-| ⚠️ | **高风险确认** | 覆盖/删除/回滚操作前输出操作摘要，等待用户"确认" |
+- 📖 新增或修改 Provider 前，先查 Hermes 官方文档和对应 Provider 官方资料；当前新增配置使用 `providers` 字典，旧 `custom_providers` 仅作迁移参考。
+- 💾 任何涉及配置的修改前，必须同时备份 `config.yaml`、`auth.json`、`.env`，共享北京时间时间戳；每个文件只保留最近 3 份。
+- 🔒 真实 API key、token、密码、Cookie、私钥、连接字符串和 `.env` 内容不得进入 Skill、README、commit、branch 或 PR。
+- 🛡️ GitHub 推送或创建 PR 前，必须检查 diff 并完成脱敏扫描；发现疑似敏感信息立即停止。
+- 🔄 GitHub 修改默认走分支 + PR，禁止直接推送 `main`，除非明确授权；提交信息必须是详细中文并带 emoji。
+- ⬆️ Hermes 升级后查官方文档与 GitHub 仓库，核对 Release、Breaking Changes、新功能和配置迁移影响。
 
 ---
 
@@ -79,10 +73,11 @@ cp SKILL.md $HERMES_HOME/skills/hermes-config-expert/SKILL.md
 - `credential_pool_strategies` 使用 **裸名**（不带 `custom:` 前缀）—— 这是 Hermes 的设计不对称，不是错误
 
 ### `references/agnes-ai-custom-provider.md`
-**单 Key Provider + .env 自动发现模式**
+**单 Key Provider + `.env` 自动发现模式**
 
 配置要点：
-- 环境变量名自动推导为 `{NAME}_API_KEY`（如 `AGNES_API_KEY`）
+- 使用当前官方 `providers` 字典和 `key_env`；旧 `custom_providers` 仅用于迁移参考
+- 环境变量名显式写为 `AGNES_API_KEY`
 - 无需 `hermes auth add`，无需 `credential_pool_strategies`
 - 适合只有一个 API Key 的场景，配置最简单
 
