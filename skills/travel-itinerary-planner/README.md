@@ -18,7 +18,7 @@ This is a Hermes Agent Skill, not a standalone travel app. It extracts trip cons
 - 需要把文字方案做成可分享、可离线打开的 HTML 路书
 - 海内外自由行、环线、自驾、亲子或多人同行规划
 
-不适合只查一个地点坐标、附近 POI 或单段路线；这类请求直接使用 [`maps`](https://github.com/Hermes-Agent/hermes-agent) 类地图能力即可。
+不适合只查一个地点坐标、附近 POI 或单段路线；这类请求直接使用地图能力即可。
 
 ---
 
