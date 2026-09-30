@@ -18,6 +18,7 @@
 | 📖 mihomo-rules | mihomo/clash-meta RULE-SET 规则集仓库维护知识库 / Maintenance knowledge base for the mihomo/clash-meta RULE-SET repo | ✅ active | networking, proxy, ruleset, ci, python, sub-brand | [Hawaiine/mihomo-rules](https://github.com/Hawaiine/mihomo-rules) |
 | 🏗️ openwrt-ci | OpenWrt 固件 CI/CD 最佳实践与可复用模板 / OpenWrt firmware CI/CD best practices and reusable templates | ✅ active | openwrt, ci, firmware, github-actions, nikki | [Hawaiine/oasisic-openwrt](https://github.com/Hawaiine/oasisic-openwrt) |
 | 🥷 stealth-browser-automation | 反爬虫隐身浏览器实战手册：源码级补丁 Chromium 突破 Cloudflare/Turnstile/FingerprintJS / Anti-bot stealth browser playbook: source-patched Chromium for Cloudflare/Turnstile/FingerprintJS | ✅ active | browser, automation, scraping, anti-bot, cloudflare | `skills/stealth-browser-automation/` |
+| 🧭 travel-itinerary-planner | 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书 / Turn travel wishes into verified, reconcilable itineraries and interactive HTML roadbooks | ✅ active | travel, itinerary, roadbook, budget, self-drive, openstreetmap | `skills/travel-itinerary-planner/` |
 <!-- SKILLS-TABLE:END -->
 
 ## 📖 这是什么
