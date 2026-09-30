@@ -38,12 +38,16 @@
    git diff --stat -- README.md .github/description.txt
    ```
 
-4. 提交前确认暂存内容，再 commit / push：
+4. 提交前确认暂存内容，完成脱敏扫描，再 commit / push：
 
    ```bash
    git add -A
    git diff --cached --stat    # 不该提交的（缓存、临时脚本）先撤出
+   git diff --cached --check
+   git grep -n -I -E 'AKIA[0-9A-Z]{16}|(api[_-]?key|access[_-]?token|secret|password|authorization)[[:space:]]*[:=][[:space:]]*[^<${`]' -- ':!*.lock'
    ```
+
+   默认创建分支并通过 PR 合并，禁止直接推送 `main`；提交信息使用详细中文并带 emoji。
 
 ---
 
@@ -53,7 +57,9 @@
 2. 输出修改计划（目标 / 影响范围 / 关键变更 / 验证方式），确认后再动手。
 3. 只写入经过验证的真实信息；不确定的标注「待验证」或不写。
 4. 变更最小化，不顺手修改无关内容。
-5. 完成后验证格式与引用一致性（链接可达、名称三处一致）。
+5. 检查完整 staged diff、将推送的提交范围和文件，并执行脱敏扫描；发现疑似凭证必须停止。
+6. 使用详细中文 + emoji 的提交信息，在分支上提交并创建 PR；禁止直接推送 `main`，除非明确授权。
+7. 完成后验证格式与引用一致性（链接可达、名称三处一致），并确认 CI 结果。
 
 ---
 
@@ -81,7 +87,9 @@
 2. Post a change plan (goal / blast radius / key edits / how it will be verified) before editing.
 3. Write only verified information; mark anything uncertain as "unverified" or leave it out.
 4. Keep the diff minimal — no drive-by edits.
-5. Verify formatting and cross-references afterwards (links resolve, names aligned).
+5. Inspect the staged diff, the commits/files to push, and scan for secrets; stop if any credential is suspected.
+6. Commit with a detailed Chinese message and emoji, then open a PR from a branch; never push directly to `main` without explicit authorization.
+7. Verify formatting and cross-references afterwards (links resolve, names aligned), and check CI.
 
 ## 🇬🇧 Rules
 

@@ -2,17 +2,23 @@
 
 Single-key custom provider for Agnes AI (Sapiens AI) via apihub.agnes-ai.com.
 
-## Config Shape
+## Config Shape（当前官方格式）
+
+新增 Provider 前，先查 Hermes 官方文档和 Agnes 官方文档。当前使用 `providers` 字典；旧 `custom_providers` 列表仅作迁移参考。
 
 ```yaml
-custom_providers:
-  - name: agnes
-    base_url: https://apihub.agnes-ai.com/v1
-    api_mode: chat_completions
+providers:
+  agnes:
+    api: https://apihub.agnes-ai.com/v1
+    key_env: AGNES_API_KEY
+    transport: chat_completions
+    default_model: agnes-2.0-flash
     models:
       - id: agnes-2.0-flash
         name: Agnes-2.0-Flash
 ```
+
+不要把真实 API key 写入 YAML、README、Skill 或 git。
 
 ## .env
 

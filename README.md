@@ -25,9 +25,9 @@
 
 Oasisic-Skills 是一个 **Hermes Agent 技能合集仓库**：每个 Skill 独立自洽、可单独安装，同时共享同一套目录规范、元数据与文档生成工具链。
 
-目前收录 4 个 Skill，覆盖四条主线：
+目前收录 5 个 Skill，覆盖五条主线：
 
-- 🤖⚙️ **Hermes 配置** —— Provider / Model / MCP 的改动闭环（备份 → 修改 → 验证 → 回滚）
+- 🤖⚙️ **Hermes 配置** —— Provider / Model / MCP 的改动闭环（官方资料 → 三件套备份 → 修改 → 验证 → 脱敏 → PR）
 - 📖 **mihomo 规则集** —— mihomo / clash-meta RULE-SET 仓库的日更管线与校验纪律
 - 🏗️ **OpenWrt 固件 CI** —— 五阶段固件流水线、feeds pin、签名与 Release 规范
 - 🥷 **反爬浏览器** —— 源码级补丁 Chromium 穿过 Cloudflare / Turnstile / FingerprintJS
@@ -126,10 +126,13 @@ Oasisic-Skills/
 修改现有 Skill 前必须确认：
 
 - 📖 先读实际文件与官方文档，禁止凭记忆操作
-- 📋 先输出修改计划（目标 / 影响面 / 验证方式），确认后再动手
+- 🧭 先核对当前 Hermes 官方格式；新增 Provider 使用 `providers` 字典
+- 💾 涉及配置时先备份 `config.yaml`、`auth.json`、`.env` 三件套，并各保留最近 3 份
 - ✍️ 只写入经过验证的信息，不确定的标「待验证」或不写
 - 🎯 变更最小化，不顺手改无关内容
 - 🔁 多变体（full/min、多平台等）一次全处理，禁止改一个漏一个
+- 🔒 推送前检查并脱敏，禁止真实凭证进入 commit、branch、PR、README 或 Skill
+- 🔄 默认走分支 + PR，禁止直接推送 `main`；提交信息必须详细、中文并带 emoji
 
 提交前跑一次生成脚本，CI 会校验同步：
 

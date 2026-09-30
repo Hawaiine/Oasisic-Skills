@@ -2,27 +2,35 @@
 
 Session-specific config details for the sensenova custom endpoint setup.
 
-## Config Shape
+## Config Shape（当前官方格式）
+
+新增 Provider 前，先查 Hermes 官方文档和 Sensenova 官方文档。当前使用 `providers` 字典；旧 `custom_providers` 列表仅作迁移参考。
 
 ```yaml
-model:
-  default: deepseek-v4-flash
-  provider: custom:sensenova
-  base_url: ''
-
-custom_providers:
-  - name: sensenova
-    base_url: https://token.sensenova.cn/v1
-    api_mode: chat_completions
+providers:
+  sensenova:
+    api: https://token.sensenova.cn/v1
+    transport: chat_completions
+    default_model: deepseek-flash
     models:
+      - id: deepseek-flash
+        name: deepseek-flash
+      - id: sensenova-6.8-flash-lite
+        name: sensenova-6.8-flash-lite
+      - id: deepseek-v4-pro
+        name: deepseek-v4-pro
       - id: deepseek-v4-flash
         name: deepseek-v4-flash
-      - id: sensenova-6.7-flash-lite
-        name: sensenova-6.7-flash-lite
+      - id: glm-5.2
+        name: glm-5.2
+      - id: kimi-k3
+        name: kimi-k3
 
 credential_pool_strategies:
-  custom:sensenova: round_robin
+  sensenova: round_robin
 ```
+
+API key 应放在 `.env` 或凭证池中，不要写入 YAML、README、Skill 或 git。
 
 ## Auth.json Pool Key
 

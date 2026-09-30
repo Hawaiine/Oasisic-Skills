@@ -19,7 +19,7 @@
 ```
 skills/hermes-config-expert/
 ├── README.md                          👈 本文件
-├── SKILL.md                           👈 核心：配置专家 System Prompt（1739 行）
+├── SKILL.md                           👈 核心：配置专家 System Prompt（以文件实际内容为准）
 ├── meta.yaml                          👈 根 README 脚本读取的元数据
 └── references/                        👈 典型 Provider 配置示例
     ├── sensenova-custom-provider.md   # 自定义 Provider + 多 Key 凭证池
@@ -35,16 +35,21 @@ skills/hermes-config-expert/
 
 | # | 原则 | 说明 |
 |---|:---|:---|
-| 🔍 | **官方文档优先** | 任何配置前必须查询最新版 Hermes 官方文档 + 第三方 Provider 官方文档 |
-| 📋 | **环境自动发现** | 不假设路径，不写死配置。每次执行 `echo $HERMES_HOME` / `hermes profile` 确认 |
-| 💾 | **备份先行** | 修改前 **三个文件（config.yaml / auth.json / .env）** 共用北京时间戳备份 |
-| ⚡ | **CLI 优先** | 能用 CLI 绝不手动编辑。**例外**：整个 `providers` 复合结构禁止用 `hermes config set` 一次写入（可能被序列化成字符串） |
-| ✅ | **一步一验证** | 每次修改后立即：config check → YAML 校验 → JSON 校验 → API Probe → hermes model |
-| 🔄 | **可回滚** | 验证失败立即回滚到最新备份，再次验证确认恢复 |
-| 🧹 | **清理临时文件** | 验证全部通过后主动清理本次任务产生的临时脚本 |
-| ✋ | **最小变更** | 只改达成目标的最小范围，无关配置不动 |
-| 🔒 | **Key 安全** | 输出时 API Key 仅显式前 8 位 + **** + 末 4 位 |
-| ⚠️ | **高风险确认** | 覆盖/删除/回滚操作前输出操作摘要，等待用户"确认" |
+| 🔍 | **官方文档优先** | 任何配置前必须查询最新版 Hermes 官方文档 + 第三方 Provider 官方文档；新 Provider 使用当前 `providers` 字典格式 |
+| 📋 | **环境自动发现** | 不假设路径、不写死配置；先确认 Hermes 版本、Profile、`HERMES_HOME`、Host/Docker、Provider、Model 和三个配置文件实际路径 |
+| 💾 | **备份先行** | 修改前必须同时备份 `config.yaml`、`auth.json`、`.env` 三件套，共用北京时间戳；每个文件只保留最近 3 份 |
+| ⚡ | **CLI 优先** | 能用 CLI 绝不手动编辑；例外：整个 `providers` 复合结构不能用 `hermes config set` 一次写入，避免被序列化成字符串 |
+| ✅ | **一步一验证** | 每次修改后按顺序执行：`hermes config check` → YAML 校验 → JSON 校验 → API Probe → `hermes model` → `hermes doctor`（若支持） |
+| 🔄 | **可回滚** | 任一验证失败立即停止，回滚三件套对应备份，再次执行语法和 Provider 验证 |
+| 🧹 | **清理临时文件** | 全部验证通过后清理一次性脚本、Probe 响应和临时片段；删除前先检查 `cron/jobs.json` 与 `config.yaml` 引用 |
+| ✋ | **最小变更** | 只改达成目标所需的最小范围，不顺手重排配置、不修改无关字段 |
+| 🔒 | **Key 安全** | 输出 API Key 仅显示前 8 位 + `****` + 末 4 位；真实凭证不得进入 Skill、README、commit、branch 或 PR |
+| 🛡️ | **推送前脱敏** | GitHub 推送或创建 PR 前扫描 staged diff、提交范围和将推送文件，发现疑似密钥立即停止 |
+| 🔄 | **GitHub 默认 PR** | GitHub 修改默认走分支 + PR，禁止直接推送 `main`；提交信息必须详细、中文并带 emoji |
+| ⬆️ | **升级后审计** | Hermes 升级后查官方文档和 GitHub Release/提交，核对 Breaking Changes、新功能和配置迁移影响 |
+| ⚠️ | **高风险确认** | 覆盖、删除、回滚、清除 Key、重启服务等操作前输出影响摘要，等待用户“确认”后执行 |
+
+> 详细执行步骤、回滚命令、脱敏扫描和 Provider 故障排查见 [`SKILL.md`](./SKILL.md)。
 
 ---
 
@@ -79,10 +84,11 @@ cp SKILL.md $HERMES_HOME/skills/hermes-config-expert/SKILL.md
 - `credential_pool_strategies` 使用 **裸名**（不带 `custom:` 前缀）—— 这是 Hermes 的设计不对称，不是错误
 
 ### `references/agnes-ai-custom-provider.md`
-**单 Key Provider + .env 自动发现模式**
+**单 Key Provider + `.env` 自动发现模式**
 
 配置要点：
-- 环境变量名自动推导为 `{NAME}_API_KEY`（如 `AGNES_API_KEY`）
+- 使用当前官方 `providers` 字典和 `key_env`；旧 `custom_providers` 仅用于迁移参考
+- 环境变量名显式写为 `AGNES_API_KEY`
 - 无需 `hermes auth add`，无需 `credential_pool_strategies`
 - 适合只有一个 API Key 的场景，配置最简单
 

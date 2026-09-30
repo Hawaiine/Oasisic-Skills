@@ -194,7 +194,7 @@ $HERMES_HOME
 三个核心配置文件的职责：
 
 ```
-config.yaml  ← 主配置（model、custom_providers、
+config.yaml  ← 主配置（model、providers、
                        credential_pool_strategies、fallback_providers）
 auth.json    ← 凭证池（各 provider 的 API Key 列表）
 .env         ← 环境变量（补充敏感值，可选）
@@ -225,6 +225,10 @@ credential_pool_strategies（config.yaml）
 --------------------------------------------------
 
 任何配置修改之前必须执行备份：
+
+- 必须同时备份 `config.yaml`、`auth.json`、`.env` 三个文件
+- 三个文件使用同一个北京时间时间戳
+- 每个文件只保留最近 3 份备份；确认三份新备份成功后再轮换删除旧备份（`config.yaml` 须同时计入根目录和 `backups/config/`）
 
 ```bash
 # 统一生成本次备份时间戳（北京时间，三个文件共用同一时间戳便于对应回滚）
@@ -346,8 +350,9 @@ auth.json
 # providers 特殊规则（自定义端点）
 --------------------------------------------------
 
-当前官方格式是 `providers:` 字典。新增自定义端点时使用它，
-不要再新增旧式 `custom_providers:` 列表项。
+当前官方格式是 `providers:` 字典。新增或修改自定义端点前，
+必须先查最新版 Hermes 官方文档与该 Provider 官方资料；新配置不得新增旧式
+`custom_providers:` 列表项。
 
 官方依据：
 https://hermes-agent.nousresearch.com/docs/integrations/providers#named-custom-providers
@@ -357,7 +362,7 @@ providers:
   <provider-key>:
     name: <provider-name>
     api: <api-endpoint>          # 必须来自该 Provider 官方文档
-    api_key: ${PROVIDER_API_KEY} # 或 key_env / key_cmd；禁止写明文 key
+    key_env: <PROVIDER_API_KEY>  # 或 api_key / key_cmd；禁止写明文 key
     default_model: <model-id>    # 可选；运行时可用 -m 覆盖
     models:                      # 可选；保留每个模型的 id 与显示名
       - id: <model-id>
@@ -388,22 +393,20 @@ CLI 可能把 YAML 列表/字典序列化成字符串。复合结构必须手动
 # model 块配置
 --------------------------------------------------
 
-标准格式：
+标准格式（当前 provider 由 `providers` 字典定义；`model.provider` 使用对应 provider key）：
 
 ```yaml
 model:
-  default: <model-name>       # 默认使用的模型名称
-  provider: custom:<name>     # 固定格式，引用 custom_providers 中的 name
-  base_url: ''                # 必须清空为空字符串
+  default: <model-name>
+  provider: <provider-key>
+  base_url: ''                # 仅在旧兼容路径需要时清空；新 providers 条目使用 api
 ```
 
 注意：
 
-model.base_url 必须清空为 ''
-
-如果之前配置过其他 provider，model.base_url 中可能残留旧地址。
-旧值优先级高于 custom_providers，请求会打到错误地址。
-发现旧值时必须立即清除。
+- 新增自定义端点不在 `model.base_url` 中写地址，而是在 `providers.<provider-key>.api` 中定义。
+- 旧 `custom:<name>` 引用仅用于兼容旧配置；新配置优先使用 providers 字典 key。
+- 如果之前配置过旧 provider，model.base_url 中可能残留旧地址；发现旧值时按当前官方迁移路径清除。
 
 --------------------------------------------------
 # Credential Pool 详解
@@ -460,7 +463,7 @@ credential_pool_strategies:
 
 作用：定义备用模型链，当默认 model 不可用时自动切换。
 
-写在 config.yaml 顶层（与 model、custom_providers 同级）：
+写在 config.yaml 顶层（与 model、providers 同级）：
 
 ```yaml
 fallback_providers:
@@ -474,7 +477,7 @@ fallback_providers:
 # 多模型运行时切换
 --------------------------------------------------
 
-同一 Endpoint 的多个模型共用一个 custom_provider，
+同一 Endpoint 的多个模型共用一个 `providers` 条目，
 无需重复声明。切换方式：
 
 方式一：运行时临时指定（不修改配置文件）：
@@ -796,12 +799,12 @@ Docker 环境中需要宿主机执行的步骤，明确标注「请用户在宿�
 
 每次修改配置必须按顺序完成以下检查项：
 
-- [ ] 备份 config.yaml 和 auth.json（带时间戳）
+- [ ] 备份 `config.yaml`、`auth.json`、`.env` 三件套（同一北京时间戳；每个文件仅保留最近 3 份）
 - [ ] @网页搜索 Hermes 官方文档 + 涉及的第三方 Provider 官方文档
-- [ ] 确认 base_url 来自 Provider 官方文档（禁止凭记忆填写）
+- [ ] 确认 `api` 来自 Provider 官方文档（禁止凭记忆填写）
 - [ ] 确认 model 名称来自 Provider 官方文档（禁止凭记忆填写）
-- [ ] custom_providers 手动编辑（禁止用 CLI 写入）
-- [ ] 确认数据流四处 name 引用一致
+- [ ] 使用当前官方 `providers` dict；旧 `custom_providers` 仅作迁移参考，禁止新增旧格式
+- [ ] 确认数据流四处 provider 引用一致
 - [ ] 确认 model.base_url 已清空为 ''
 - [ ] 确认 credential_pool_strategies key 为裸名（不带 custom:）
 - [ ] python3 -m json.tool auth.json 验证 JSON 格式
@@ -810,6 +813,9 @@ Docker 环境中需要宿主机执行的步骤，明确标注「请用户在宿�
 - [ ] hermes model 确认 provider 可见
 - [ ] Docker 环境：告知用户执行 docker compose restart `<service-name>`
 - [ ] 验证全部通过后，清理本次任务产生的临时脚本和临时文件
+- [ ] Hermes 升级后已查官方文档与 GitHub 仓库，核对变更与 Breaking Changes
+- [ ] GitHub 修改已走 PR 流程；提交信息为详细中文并带 emoji
+- [ ] 推送前已完成脱敏扫描，确认没有真实 key、token、密码、Cookie、私钥或连接字符串
 - [ ] 所有文件命名时间戳已使用北京时间（TZ=Asia/Shanghai）
 
 --------------------------------------------------
@@ -1423,22 +1429,22 @@ Hermes Agent 的上下文窗口（对话历史）有长度限制。
 更换 model.default 或 model.provider 后，检查：
 
 - fallback_providers 中是否还引用了旧 model 名称
-- custom_providers 中该 provider 的 model 字段是否需要同步更新
+- `providers` 字典中该 provider 的 `default_model` / `models` 是否需要同步更新
 - 如有残留旧 model 名称，一并更新或删除
 
 ## 移除 fallback_providers 条目时
 
-移除后检查该条目引用的 Provider 是否仍在 custom_providers 中存在。
-如果 custom_providers 中也已不存在，告知用户该 Provider 已完全移除。
+移除后检查该条目引用的 Provider 是否仍在 `providers` 中存在。
+如果 `providers` 中也已不存在，告知用户该 Provider 已完全移除。
 
 ## 通用原则
 
 每次增删操作完成后，执行一次全局引用检查：
 
-# 快速检查 config.yaml 中所有 provider 引用是否有对应的 custom_providers 定义
+# 快速检查 config.yaml 中所有 provider 引用是否有对应的 providers 定义
 ```bash
-# Quick check: all provider references in config.yaml have matching custom_providers entries
-grep -E "provider:|custom:" "$HERMES_HOME/config.yaml"
+# Quick check: all provider references in config.yaml have matching providers entries
+grep -E "provider:|providers:" "$HERMES_HOME/config.yaml"
 ```
 
 对照 auth.json 中的 credential_pool key，确认：
@@ -1708,12 +1714,45 @@ unset _TS
 优先采用最新版方案，同时说明与旧版本的区别。
 
 --------------------------------------------------
+# 升级后资料审计
+--------------------------------------------------
+
+每次 Hermes 升级完成后，后台检查：
+
+1. 官方文档：配置格式、命令、迁移说明与 Breaking Changes
+2. 官方 GitHub 仓库：Release、`main` 变更与相关 Issue/PR
+3. 当前配置：是否需要迁移字段、更新命令、调整 Skill 或修复过时示例
+
+审计结果必须记录已查资料、实际变化、兼容性影响和是否需要动作；没有证据的内容不写入本 Skill。
+
+--------------------------------------------------
+# GitHub 修改与提交规范
+--------------------------------------------------
+
+- GitHub 相关修改默认走分支 + PR 流程，禁止直接推送 `main`，除非用户明确授权。
+- 提交信息必须使用**详细中文 + emoji**，说明修改主题、关键变更与验证结果。
+- 推送分支或创建 PR 前，必须检查 `git diff`、`git diff --cached --stat`，并执行脱敏扫描。
+- 脱敏扫描必须覆盖 staged diff、提交范围和将要推送的文件，重点检查 API keys、tokens、密码、Cookie、私钥、连接字符串、`.env` 内容和真实凭证池字段。
+- 发现疑似敏感信息时立即停止推送，先移除并重新扫描；不得用“看起来像占位符”代替验证。
+- 更新 Skill 后同步更新相关 README、元数据和生成物，并再次执行脱敏扫描。
+
+推荐检查：
+
+```bash
+git diff --check
+git diff --cached --check
+git diff --cached --stat
+git grep -n -I -E 'AKIA[0-9A-Z]{16}|(api[_-]?key|access[_-]?token|secret|password|authorization)[[:space:]]*[:=][[:space:]]*[^<${`]' -- ':!*.lock'
+```
+
+扫描结果必须人工复核；真实凭证不得进入 commit、branch、PR、README 或 Skill。
+
+--------------------------------------------------
 # 常用命令速查（带注释）
 --------------------------------------------------
 
 ```bash
 # ------ 版本与诊断 ------
-
 hermes --version
 # 查看当前 Hermes 版本，每次开始前确认，避免文档与实际版本不符
 
@@ -1741,7 +1780,7 @@ hermes config check
 
 hermes config set <key> <value>
 # 通过 CLI 设置配置项
-# 注意：custom_providers 禁止用此命令（会序列化为字符串）
+# 注意：整个 providers / custom_providers 复合结构禁止用此命令一次写入（可能序列化为字符串）
 
 hermes config get <key>
 # 查询某个配置项的当前值，验证 set 是否生效
@@ -1757,8 +1796,8 @@ hermes model list
 hermes model use <provider>/<model>
 # 临时切换模型（等同于 -m 参数，不修改配置文件）
 
-hermes -m <model-name> --provider custom:<name>
-# 运行时指定模型和 provider（临时生效，不修改配置）
+# 新配置使用 provider key；旧 custom:<name> 仅用于兼容旧配置
+hermes -m <model-name> --provider <provider-key>
 
 # ------ Auth / Credential ------
 
@@ -1769,7 +1808,7 @@ hermes auth add custom:<name>
 # 交互式添加 API Key（推荐，避免手动编辑 JSON 引入格式错误）
 # 如 CLI 不支持，改为直接编辑 auth.json 并用 json.tool 验证
 
-# ------ 备份（每次修改前必须执行，三个文件共用同一时间戳）------
+# ------ 备份（每次修改前必须执行，三个文件共用同一时间戳；各留最近 3 份）------
 
 # 生成共用时间戳（北京时间），三个文件使用同一时间戳便于回滚时对应版本
 # Generate shared Beijing timestamp for all three files
@@ -1783,12 +1822,28 @@ cp "$HERMES_HOME/config.yaml" "$HERMES_HOME/config.yaml.bak.$_TS"
 # Backup credential file
 cp "$HERMES_HOME/auth.json" "$HERMES_HOME/auth.json.bak.$_TS"
 
-# 备份环境变量文件（仅当文件存在时执行）
-# Backup .env only if it exists
+# 备份环境变量文件
+# Backup .env
 [ -f "$HERMES_HOME/.env" ] \
   && cp "$HERMES_HOME/.env" "$HERMES_HOME/.env.bak.$_TS" \
   && echo "✓ .env 备份完成 / .env backed up" \
-  || echo "- .env 不存在，跳过 / .env not found, skipping"
+  || { echo "✗ .env 不存在，三件套备份不完整 / .env missing, three-file backup incomplete"; exit 1; }
+
+# 轮换：仅在三份备份都成功后执行；自动归档的 config.yaml 备份也计入最近 3 份
+python3 - <<'PY'
+from pathlib import Path
+import os
+home = Path(os.environ["HERMES_HOME"])
+groups = {
+    "config.yaml": list(home.glob("config.yaml.bak.*")) + list((home / "backups" / "config").glob("config.yaml.bak.*")),
+    "auth.json": list(home.glob("auth.json.bak.*")),
+    ".env": list(home.glob(".env.bak.*")),
+}
+for name, paths in groups.items():
+    assert len(paths) >= 1, f"{name} backup missing"
+    for old in sorted(paths, key=lambda p: p.stat().st_mtime, reverse=True)[3:]:
+        old.unlink()
+PY
 
 unset _TS
 
