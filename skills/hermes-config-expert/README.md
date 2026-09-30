@@ -31,14 +31,25 @@ skills/hermes-config-expert/
 
 ---
 
-## 📋 核心规则
+## 🎯 核心原则
 
-- 📖 新增或修改 Provider 前，先查 Hermes 官方文档和对应 Provider 官方资料；当前新增配置使用 `providers` 字典，旧 `custom_providers` 仅作迁移参考。
-- 💾 任何涉及配置的修改前，必须同时备份 `config.yaml`、`auth.json`、`.env`，共享北京时间时间戳；每个文件只保留最近 3 份。
-- 🔒 真实 API key、token、密码、Cookie、私钥、连接字符串和 `.env` 内容不得进入 Skill、README、commit、branch 或 PR。
-- 🛡️ GitHub 推送或创建 PR 前，必须检查 diff 并完成脱敏扫描；发现疑似敏感信息立即停止。
-- 🔄 GitHub 修改默认走分支 + PR，禁止直接推送 `main`，除非明确授权；提交信息必须是详细中文并带 emoji。
-- ⬆️ Hermes 升级后查官方文档与 GitHub 仓库，核对 Release、Breaking Changes、新功能和配置迁移影响。
+| # | 原则 | 说明 |
+|---|:---|:---|
+| 🔍 | **官方文档优先** | 任何配置前必须查询最新版 Hermes 官方文档 + 第三方 Provider 官方文档；新 Provider 使用当前 `providers` 字典格式 |
+| 📋 | **环境自动发现** | 不假设路径、不写死配置；先确认 Hermes 版本、Profile、`HERMES_HOME`、Host/Docker、Provider、Model 和三个配置文件实际路径 |
+| 💾 | **备份先行** | 修改前必须同时备份 `config.yaml`、`auth.json`、`.env` 三件套，共用北京时间戳；每个文件只保留最近 3 份 |
+| ⚡ | **CLI 优先** | 能用 CLI 绝不手动编辑；例外：整个 `providers` 复合结构不能用 `hermes config set` 一次写入，避免被序列化成字符串 |
+| ✅ | **一步一验证** | 每次修改后按顺序执行：`hermes config check` → YAML 校验 → JSON 校验 → API Probe → `hermes model` → `hermes doctor`（若支持） |
+| 🔄 | **可回滚** | 任一验证失败立即停止，回滚三件套对应备份，再次执行语法和 Provider 验证 |
+| 🧹 | **清理临时文件** | 全部验证通过后清理一次性脚本、Probe 响应和临时片段；删除前先检查 `cron/jobs.json` 与 `config.yaml` 引用 |
+| ✋ | **最小变更** | 只改达成目标所需的最小范围，不顺手重排配置、不修改无关字段 |
+| 🔒 | **Key 安全** | 输出 API Key 仅显示前 8 位 + `****` + 末 4 位；真实凭证不得进入 Skill、README、commit、branch 或 PR |
+| 🛡️ | **推送前脱敏** | GitHub 推送或创建 PR 前扫描 staged diff、提交范围和将推送文件，发现疑似密钥立即停止 |
+| 🔄 | **GitHub 默认 PR** | GitHub 修改默认走分支 + PR，禁止直接推送 `main`；提交信息必须详细、中文并带 emoji |
+| ⬆️ | **升级后审计** | Hermes 升级后查官方文档和 GitHub Release/提交，核对 Breaking Changes、新功能和配置迁移影响 |
+| ⚠️ | **高风险确认** | 覆盖、删除、回滚、清除 Key、重启服务等操作前输出影响摘要，等待用户“确认”后执行 |
+
+> 详细执行步骤、回滚命令、脱敏扫描和 Provider 故障排查见 [`SKILL.md`](./SKILL.md)。
 
 ---
 
