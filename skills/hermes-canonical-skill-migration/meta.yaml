@@ -1,0 +1,11 @@
+name: hermes-canonical-skill-migration
+short_name: "Skill 迁移"
+title: "🧩 hermes-canonical-skill-migration"
+summary_zh: "把外部 Git 仓库的 canonical multi-file Skill 安全接入本机 Hermes：source 决策树、external dirs、实际加载验证、shadowing、旧 Skill 退役与可回滚证据"
+summary_en: "Safely integrate an external repository's canonical multi-file Skill into local Hermes: source decision tree, external dirs, actual-load verification, shadowing, legacy retirement with rollback evidence"
+status: active
+version: "1.0.0"
+upstream_repo: ""
+source_note: "由一次真实的“外部仓库 canonical multi-file Skill → 本机 Hermes”迁移中的实测失败模式与验证门抽象而成；只收录通用流程与不变量，不收录任何具体路径 / SHA / 版本 / 数量"
+last_updated: "2026-10"
+tags: [hermes, skills, migration, external-dirs, tap, shadowing, retirement, validation]

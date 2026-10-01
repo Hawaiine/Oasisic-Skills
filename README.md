@@ -3,7 +3,7 @@
 ### Hermes Agent Skills Monorepo · Oasisic 技能合集
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-6-blueviolet.svg)](#-技能清单)
+[![Skills](https://img.shields.io/badge/Skills-7-blueviolet.svg)](#-技能清单)
 [![README Check](https://github.com/Hawaiine/Oasisic-Skills/actions/workflows/readme-check.yml/badge.svg)](https://github.com/Hawaiine/Oasisic-Skills/actions/workflows/readme-check.yml)
 
 > 🇨🇳 **一套仓库，集中维护 Hawaiine 的 Hermes Agent Skills。**
@@ -14,6 +14,7 @@
 <!-- SKILLS-TABLE:START -->
 | Skill | Summary | Status | Tags | Source |
 |-------|---------|--------|------|--------|
+| 🧩 hermes-canonical-skill-migration | 把外部 Git 仓库的 canonical multi-file Skill 安全接入本机 Hermes：source 决策树、external dirs、实际加载验证、shadowing、旧 Skill 退役与可回滚证据 / Safely integrate an external repository's canonical multi-file Skill into local Hermes: source decision tree, external dirs, actual-load verification, shadowing, legacy retirement with rollback evidence | ✅ active | hermes, skills, migration, external-dirs, tap, shadowing, retirement, validation | `skills/hermes-canonical-skill-migration/` |
 | 🤖⚙️ hermes-config-expert | 严格、可验证、可回滚的 Hermes Agent 配置工作流规范 / Strict, verifiable, and rollback-safe Hermes Agent configuration workflow | ✅ active | hermes, configuration, provider, mcp, security | `skills/hermes-config-expert/` |
 | 📖 mihomo-rules | mihomo/clash-meta RULE-SET 规则集仓库维护知识库 / Maintenance knowledge base for the mihomo/clash-meta RULE-SET repo | ✅ active | networking, proxy, ruleset, ci, python, sub-brand | [Hawaiine/mihomo-rules](https://github.com/Hawaiine/mihomo-rules) |
 | 🎨 oasisic-icons-maintainer | Oasisic-Icons 唯一 canonical 维护 Skill：SSOT / 关系引擎 / 物理路径 / 生态 / 资产模型 / Change Propagation / 文档纪律 / 验证门禁，含 intake、rename、ssot-sync、audit、spec-change 专项流程 / Single canonical maintenance skill for Oasisic-Icons: SSOT, resolver, physical paths, ecosystem, asset model, change propagation, docs discipline, validation gates — with intake / rename / ssot-sync / audit / spec-change references | ✅ active | icons, oasisic-icons, ssot, brands-json, resolver, ecosystem, asset-model, change-propagation, docs, ci, github | [Hawaiine/Oasisic-Icons](https://github.com/Hawaiine/Oasisic-Icons) |
@@ -26,7 +27,7 @@
 
 Oasisic-Skills 是一个 **Hermes Agent 技能合集仓库**：每个 Skill 独立自洽、可单独安装，同时共享同一套目录规范、元数据与文档生成工具链。
 
-目前收录 6 个 Skill，覆盖六条主线：
+目前收录 7 个 Skill，覆盖七条主线：
 
 - 🤖⚙️ **Hermes 配置** —— Provider / Model / MCP 的改动闭环（官方资料 → 三件套备份 → 修改 → 验证 → 脱敏 → PR）
 - 📖 **mihomo 规则集** —— mihomo / clash-meta RULE-SET 仓库的日更管线与校验纪律
@@ -34,6 +35,7 @@ Oasisic-Skills 是一个 **Hermes Agent 技能合集仓库**：每个 Skill 独�
 - 🥷 **反爬浏览器** —— 源码级补丁 Chromium 穿过 Cloudflare / Turnstile / FingerprintJS
 - 🧭 **行迹旅行路书** —— 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书
 - 🎨 **图标仓库维护** —— Oasisic-Icons 的 SSOT / 关系引擎 / 资产模型 / 文档纪律与验证门禁
+- 🧩 **Canonical Skill 迁移** —— 把外部仓库的 canonical multi-file Skill 安全接入本机：source 决策树、实际加载验证、shadowing 排查、旧 Skill 可回滚退役
 
 A collection of self-contained [Hermes Agent](https://hermes-agent.nousresearch.com/) skills sharing one directory convention, one metadata format, and one documentation toolchain. Each skill installs independently.
 
@@ -89,6 +91,7 @@ Oasisic-Skills/
 │   └── workflows/
 │       └── readme-check.yml   ← CI：校验 README / description 与 meta.yaml 同步
 └── skills/
+    ├── hermes-canonical-skill-migration/ 🧩 Canonical Skill 迁移（SKILL.md + 5 份参考）
     ├── hermes-config-expert/        🤖⚙️ Hermes 配置专家（System Prompt + 5 份参考）
     ├── mihomo-rules/                📖 规则集维护知识库（SKILL.md 单文件加载）
     ├── oasisic-icons-maintainer/    🎨 Oasisic-Icons 维护规范（SKILL.md 单文件加载）
