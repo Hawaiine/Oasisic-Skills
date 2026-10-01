@@ -19,11 +19,56 @@ stays the source of truth.
   Never scrape someone's travel-page images, never label a stock/AI image as a
   real on-location shot. No usable photo → keep a text section with the place name.
 
-## Section order
+## Section order and visual system
+
+The text/data source of truth remains:
 
 目的地的一眼 → 旅程如何展开 → 分日视觉章节 → 当天可操作路书 → 交通住宿预算 →
-行前注意与避雷 → 必备清单. Each chapter image carries 1–2 lines tied to that day's
-actual action (why start here, how the next leg is en route, when to stop).
+行前注意与避雷 → 必备清单.
+
+For the HTML presentation layer, use this compatible rhythm when it improves
+scannability:
+
+`hero` → `overview` → `highlights` → `timeline` → `details` → `tips` → `footer`.
+
+Use an editorial, restrained design system rather than a tourism-ad poster:
+
+```css
+:root {
+  --bg: #F6F7F9;
+  --bg-alt: #EEF1F4;
+  --surface: #FFFFFF;
+  --text: #2A3540;
+  --text-2: #5E6E7E;
+  --text-3: #8E9BAA;
+  --accent: #D0684A;
+  --accent-hover: #B85A3E;
+  --accent-soft: #F4E8E2;
+  --blue: #4A6272;
+  --blue-light: #6A8494;
+  --blue-line: #B8C8D6;
+  --border: #DDE0E4;
+}
+```
+
+Use serif system fonts for prominent headings and sans-serif system stacks for
+body copy; do not load fonts from an online service. Keep a max content width near
+1160px, generous section spacing, 10–12px card corners, subtle borders, and
+responsive grids. A fixed navigation may be used for long pages, but it must not
+obscure content or keyboard focus. Chinese headings must not use forced uppercase
+or negative letter spacing.
+
+Inline SVG is encouraged for route diagrams, transport icons, and a small hero
+illustration. Adapt the scene to the destination: mountains are suitable for a
+mountain route, but coast, city, desert, forest, and historic-town trips need
+corresponding visual vocabulary. Keep all factual route, safety, and place
+information in text or accessible labels; decoration must not carry the only
+meaning.
+
+Each chapter image carries 1–2 lines tied to that day's actual action (why start
+here, how the next leg is en route, when to stop). The visual layer must never
+hide or replace fact tags, sources, budget rows, map fallback, checklist controls,
+or route trade-offs.
 
 ## Interactions (all must earn their place)
 

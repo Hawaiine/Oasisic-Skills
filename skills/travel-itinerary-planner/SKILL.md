@@ -106,6 +106,18 @@ for a preview / HTML / shareable roadbook, build the interactive page from
 `references/html-roadbook.md`. The HTML is an *additional* artifact — the text plan
 must stand on its own.
 
+When building HTML, apply the **refined landing visual layer** in
+`references/html-roadbook.md`: editorial serif headings, a restrained blue-grey /
+warm-neutral / sunset-orange token system, generous whitespace, responsive cards,
+inline SVG illustrations, and a clear hero → overview → highlights → timeline →
+details → practical information rhythm. This is presentation only: never remove,
+flatten, or paraphrase away fact tags, sources, route trade-offs, budget rows,
+checklist behavior, or map/photo attribution. Prefer a modern cool-grey white
+background over aged-paper tones, and adapt the illustration to the destination
+rather than always drawing mountains.
+*Done when:* the HTML is visually coherent and every required roadbook data,
+interaction, attribution, and fallback remains present.
+
 ## Step 6 — Self-check
 
 Run `python3 scripts/itinerary_check.py <data.json>` (schema in the template's
@@ -137,4 +149,6 @@ every tag consistent with its source. Then name **two** highest-value optional e
 - [ ] Budget uses the fixed 3 columns with total + per-person + contingency, checked vs cap
 - [ ] Self-drive: per-day road chain, ≥3 checkpoints, driver execution card
 - [ ] HTML (if built): open stack only, licensed fonts, attributed photos, offline assets present
+- [ ] HTML visual layer: responsive editorial hierarchy, destination-appropriate inline SVG, no aged-paper styling, no external dependency introduced
+- [ ] HTML semantic integrity: hero/overview/highlights/timeline/details/tips rhythm supports the roadbook without hiding facts, sources, budget, map, or checklist
 - [ ] Two optional edits offered to the user
