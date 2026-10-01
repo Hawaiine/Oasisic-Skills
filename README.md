@@ -3,7 +3,7 @@
 ### Hermes Agent Skills Monorepo · Oasisic 技能合集
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-4-blueviolet.svg)](#-技能清单)
+[![Skills](https://img.shields.io/badge/Skills-6-blueviolet.svg)](#-技能清单)
 [![README Check](https://github.com/Hawaiine/Oasisic-Skills/actions/workflows/readme-check.yml/badge.svg)](https://github.com/Hawaiine/Oasisic-Skills/actions/workflows/readme-check.yml)
 
 > 🇨🇳 **一套仓库，集中维护 Hawaiine 的 Hermes Agent Skills。**
@@ -16,6 +16,7 @@
 |-------|---------|--------|------|--------|
 | 🤖⚙️ hermes-config-expert | 严格、可验证、可回滚的 Hermes Agent 配置工作流规范 / Strict, verifiable, and rollback-safe Hermes Agent configuration workflow | ✅ active | hermes, configuration, provider, mcp, security | `skills/hermes-config-expert/` |
 | 📖 mihomo-rules | mihomo/clash-meta RULE-SET 规则集仓库维护知识库 / Maintenance knowledge base for the mihomo/clash-meta RULE-SET repo | ✅ active | networking, proxy, ruleset, ci, python, sub-brand | [Hawaiine/mihomo-rules](https://github.com/Hawaiine/mihomo-rules) |
+| 🎨 oasisic-icons-maintainer | Oasisic-Icons 品牌图标仓库的长期维护规范：SSOT / 关系引擎 / 物理路径 / 资产模型 / 文档纪律 / 验证门禁 / Long-term maintenance rules for the Oasisic-Icons brand-icon repo: SSOT, resolver, physical paths, asset model, docs discipline, validation gates | ✅ active | icons, oasisic-icons, ssot, brands-json, resolver, ecosystem, asset-model, docs, ci, github | [Hawaiine/Oasisic-Icons](https://github.com/Hawaiine/Oasisic-Icons) |
 | 🏗️ openwrt-ci | OpenWrt 固件 CI/CD 最佳实践与可复用模板 / OpenWrt firmware CI/CD best practices and reusable templates | ✅ active | openwrt, ci, firmware, github-actions, nikki | [Hawaiine/oasisic-openwrt](https://github.com/Hawaiine/oasisic-openwrt) |
 | 🥷 stealth-browser-automation | 反爬虫隐身浏览器实战手册：源码级补丁 Chromium 突破 Cloudflare/Turnstile/FingerprintJS / Anti-bot stealth browser playbook: source-patched Chromium for Cloudflare/Turnstile/FingerprintJS | ✅ active | browser, automation, scraping, anti-bot, cloudflare | `skills/stealth-browser-automation/` |
 | 🧭 travel-itinerary-planner | 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书 / Turn travel wishes into verified, reconcilable itineraries and interactive HTML roadbooks | ✅ active | travel, itinerary, roadbook, budget, self-drive, openstreetmap | `skills/travel-itinerary-planner/` |
@@ -25,12 +26,14 @@
 
 Oasisic-Skills 是一个 **Hermes Agent 技能合集仓库**：每个 Skill 独立自洽、可单独安装，同时共享同一套目录规范、元数据与文档生成工具链。
 
-目前收录 5 个 Skill，覆盖五条主线：
+目前收录 6 个 Skill，覆盖六条主线：
 
 - 🤖⚙️ **Hermes 配置** —— Provider / Model / MCP 的改动闭环（官方资料 → 三件套备份 → 修改 → 验证 → 脱敏 → PR）
 - 📖 **mihomo 规则集** —— mihomo / clash-meta RULE-SET 仓库的日更管线与校验纪律
 - 🏗️ **OpenWrt 固件 CI** —— 五阶段固件流水线、feeds pin、签名与 Release 规范
 - 🥷 **反爬浏览器** —— 源码级补丁 Chromium 穿过 Cloudflare / Turnstile / FingerprintJS
+- 🧭 **行迹旅行路书** —— 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书
+- 🎨 **图标仓库维护** —— Oasisic-Icons 的 SSOT / 关系引擎 / 资产模型 / 文档纪律与验证门禁
 
 A collection of self-contained [Hermes Agent](https://hermes-agent.nousresearch.com/) skills sharing one directory convention, one metadata format, and one documentation toolchain. Each skill installs independently.
 
@@ -88,8 +91,10 @@ Oasisic-Skills/
 └── skills/
     ├── hermes-config-expert/        🤖⚙️ Hermes 配置专家（System Prompt + 5 份参考）
     ├── mihomo-rules/                📖 规则集维护知识库（SKILL.md 单文件加载）
+    ├── oasisic-icons-maintainer/    🎨 Oasisic-Icons 维护规范（SKILL.md 单文件加载）
     ├── openwrt-ci/                  🏗️ 固件 CI/CD（SKILL.md + 参考 + 14 个模板）
-    └── stealth-browser-automation/  🥷 反爬浏览器（SKILL.md + Docker + 探针）
+    ├── stealth-browser-automation/  🥷 反爬浏览器（SKILL.md + Docker + 探针）
+    └── travel-itinerary-planner/    🧭 行迹旅行路书（SKILL.md + 参考 + 模板）
 ```
 
 每个 Skill 统一三件套：

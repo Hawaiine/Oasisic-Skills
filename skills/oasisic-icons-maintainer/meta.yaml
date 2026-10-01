@@ -1,0 +1,11 @@
+name: oasisic-icons-maintainer
+short_name: "图标仓库维护"
+title: "🎨 oasisic-icons-maintainer"
+summary_zh: "Oasisic-Icons 品牌图标仓库的长期维护规范：SSOT / 关系引擎 / 物理路径 / 资产模型 / 文档纪律 / 验证门禁"
+summary_en: "Long-term maintenance rules for the Oasisic-Icons brand-icon repo: SSOT, resolver, physical paths, asset model, docs discipline, validation gates"
+status: active
+version: "1.0.0"
+upstream_repo: "https://github.com/Hawaiine/Oasisic-Icons"
+source_note: "由 Oasisic-Icons 的分类/物理层级重构与多轮审计沉淀（含文档引用失效事故与 icon-quality-notes 身份收口）；canonical 存放于本仓库，不在本机另存手工副本"
+last_updated: "2026-10"
+tags: [icons, oasisic-icons, ssot, brands-json, resolver, ecosystem, asset-model, docs, ci, github]
