@@ -25,3 +25,5 @@ jobs:
             exit 1
           fi
           echo 'README 与 skills/*/meta.yaml 同步 ✅'
+      - name: Validate skill identity
+        run: python3 scripts/validate-skill-identity.py
