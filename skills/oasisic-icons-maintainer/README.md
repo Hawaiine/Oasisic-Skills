@@ -109,7 +109,6 @@ python3 -m unittest discover -s tests
 
 | 文档 | 作用 |
 |------|------|
-| `AGENTS.md` | 仓库级长期规范（SSOT / 目录 / 关系 / 资产 / 校验 / 文档纪律） |
 | `docs/references/brand-naming-contract.md` | 命名与同步契约 |
 | `docs/references/brand-ownership-audit.md` | 研究层：现实世界归属证据（历史快照，非当前状态） |
 | `docs/guides/usage.md` | 面向用户的客户端图标配置指南 |

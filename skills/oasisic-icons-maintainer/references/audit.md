@@ -303,7 +303,7 @@ ecosystem root  = graph root 且 entity_type = ecosystem
 
 ## 13. 参考入口（在**当前仓库**里读取，不在本文件里抄）
 
-- `AGENTS.md`（仓库级长期规范）、`docs/references/brand-naming-contract.md`（命名契约）
+- `docs/references/brand-naming-contract.md`（命名契约）
 - `scripts/ci-validate-icons.py`（结构校验，组数以运行输出为准）、`scripts/ci-validate-docs.py`（文档 concrete 路径）
 - `scripts/brand_relationships.py`（唯一关系引擎）、`expected_icon_path()`（唯一路径解析）
 - `config/brands.json` / `config/categories.json`（SSOT）、`config/brand-review-queue.json`（人工裁决出口）
