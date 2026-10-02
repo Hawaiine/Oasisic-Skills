@@ -1,11 +1,11 @@
 name: oasisic-icons-maintainer
 short_name: "图标仓库维护"
 title: "🎨 oasisic-icons-maintainer"
-summary_zh: "Oasisic-Icons 唯一 canonical 维护 Skill：SSOT / 关系引擎 / 物理路径 / 生态 / 资产模型 / Change Propagation / 文档纪律 / 验证门禁，含 intake、rename、ssot-sync、audit、spec-change 专项流程"
-summary_en: "Single canonical maintenance skill for Oasisic-Icons: SSOT, resolver, physical paths, ecosystem, asset model, change propagation, docs discipline, validation gates — with intake / rename / ssot-sync / audit / spec-change references"
+summary_zh: "Oasisic-Icons 唯一 canonical 维护 Skill：SSOT / 关系引擎 / 物理路径 / 生态 / 资产模型 / rounded-mask 豁免登记 / json_io 统一加载 / Change Propagation / 文档纪律 / 验证门禁（含 32 例 mutation 矩阵），含 intake、rename、ssot-sync、audit、spec-change 专项流程"
+summary_en: "Single canonical maintenance skill for Oasisic-Icons: SSOT, resolver, physical paths, ecosystem, asset model, rounded-mask exemption registry, unified json_io loading, change propagation, docs discipline, validation gates (incl. the 32-case mutation matrix) — with intake / rename / ssot-sync / audit / spec-change references"
 status: active
-version: "1.1.0"
+version: "1.2.0"
 upstream_repo: "https://github.com/Hawaiine/Oasisic-Icons"
-source_note: "由 Oasisic-Icons 的分类/物理层级重构、多轮独立审计与本机专项 Skill 的知识融合沉淀；canonical 存放于本仓库，本机只消费，不另存手工副本"
+source_note: "由 Oasisic-Icons 的分类/物理层级重构、多轮独立审计与本机专项 Skill 的知识融合沉淀；canonical 存放于本仓库，本机只消费，不另存手工副本。1.2.0 增补 Phase 3 契约收口与维护强化（mask 豁免 / json_io / mutation 矩阵 / 级联抑制）"
 last_updated: "2026-10"
-tags: [icons, oasisic-icons, ssot, brands-json, resolver, ecosystem, asset-model, change-propagation, docs, ci, github]
+tags: [icons, oasisic-icons, ssot, brands-json, resolver, ecosystem, asset-model, mask-exemption, json-io, mutation-matrix, change-propagation, docs, ci, github]
