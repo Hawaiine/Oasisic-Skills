@@ -12,7 +12,7 @@
 
 # 🎨 oasisic-icons-maintainer
 
-**[Hawaiine/Oasisic-Icons](https://github.com/Hawaiine/Oasisic-Icons)** —— 跨平台代理策略组品牌图标合集（SSOT + 关系引擎 + 生成器 + CI 单向派生）。
+**[Hawaiine/Oasisic-Icons](https://github.com/Hawaiine/Oasisic-Icons)** —— 代理客户端品牌图标资产库（512×512 RGBA canonical 图标；SSOT + 关系引擎 + 生成器 + CI 单向派生）。
 
 本 Skill 保存的是**长期维护规则**：事实在哪、关系怎么判、路径怎么推、资产怎么处理、变化如何全链路传播、文档如何分界、验证到哪一步为止。
 它不复制 README，也不保存当前仓库快照（图标数量、分类数、生态数、commit SHA 等）。
@@ -67,20 +67,23 @@ hermes skills install Hawaiine/Oasisic-Skills/skills/oasisic-icons-maintainer
 ## 🧭 它覆盖什么 / What it covers
 
 - **Repository Identity**：独立最高上游；下游只是 consumer，不得反向定义 SSOT 事实
-- **SSOT**：`config/brands.json` + `config/categories.json`；`category` 与 `parent_brand` 语义互相独立
+- **SSOT**：`config/brands.json` + `config/categories.json`；`category` 与 `parent_brand` 语义互相独立；
+  **JSON 读取唯一入口 `scripts/json_io.py`**（fail-fast、绝不返回空数据、路径+行列诊断），schema 结构校验由各脚本自己做
 - **Naming Model**：`identifier`（目录/文件名）≠ `display_name`；显示名变更 ≠ identifier rename
 - **Relationship Model**：`parent_brand` = immediate brand/product parent ≠ ownership / developer / platform
 - **Physical Path**：一切路径推导走 `expected_icon_path()`，禁止各脚本自行拼装
 - **Ecosystem**：生态根动态派生（graph root + canonical descendants 达阈值），不维护生态清单、不写死数量
 - **Asset Model**：512×512 / RGBA / squircle r≈115 / 像素保真；
-  `official source asset` ≠ `repository asset` ≠ `recreated artwork`
+  `official source asset` ≠ `repository asset` ≠ `recreated artwork`；
+  **Rounded mask 边界**由 `config/icon-mask-exemptions.json` 显式登记历史越界资产（修复后必须删条目，豁免表不允许腐烂）
 - **Change Propagation Protocol**：任何事实变化 → 依赖发现 → 影响分类 → 同步 → 重生成 →
   旧值残留扫描 → 校验（含 Acceptance Table）
 - **Review Queue**：现实世界语义交人工裁决，evidence 不得成为第二真相
 - **Generated Files**：SSOT → resolver → generator → derived → CI 单向派生，生成器必须幂等
 - **Documentation Discipline**：generated / manual reference / historical 三类边界；
   current-state 文档里的 concrete icon path 是公开契约，**无豁免清单**
-- **Validation**：结构一致性 CI + 文档引用校验 + 单测 + `git diff --check`；CI green ≠ 现实语义正确
+- **Validation**：结构一致性 CI（`--strict` fail-fast + 级联抑制归因）+ 文档引用校验 + 单测 + `git diff --check`；
+  **32 例 mutation 矩阵**证明「CI 真的会红」；CI green ≠ 现实语义正确
 - **Common Failure Modes**：文档路径失效、统计腐烂、身份混淆、字段与派生双轨、自洽 CI ≠ 现实真相
 - **Git / PR Discipline**：branch → PR → review → merge；不直推 main、不重写历史
 
@@ -109,6 +112,7 @@ python3 -m unittest discover -s tests
 
 | 文档 | 作用 |
 |------|------|
+| `docs/guides/maintenance.md` | 维护手册：事实模型 / 最短新增路径 / 派生生成顺序与幂等 / 校验流程 / 排障速查 / 已知边界 |
 | `docs/references/brand-naming-contract.md` | 命名与同步契约 |
 | `docs/references/brand-ownership-audit.md` | 研究层：现实世界归属证据（历史快照，非当前状态） |
 | `docs/guides/usage.md` | 面向用户的客户端图标配置指南 |

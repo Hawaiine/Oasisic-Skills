@@ -3,17 +3,19 @@ name: oasisic-icons-maintainer
 description: >
   Use when maintaining Hawaiine/Oasisic-Icons (brand icon asset repo): SSOT brands.json /
   categories.json, relationship resolver, physical paths, ecosystem threshold, asset model
-  (512×512 RGBA squircle), change-propagation, docs discipline, validation gates, PR workflow.
-  Load before adding/renaming/moving brands, changing a spec/relation/category, editing docs,
-  or judging "is CI enough". Specialized procedures: references/{intake,rename,ssot-sync,
+  (512×512 RGBA squircle), rounded-mask exemption registry, unified json_io loading, change-
+  propagation, docs discipline, validation gates (incl. the 32-case mutation matrix that proves
+  "CI really goes red"), PR workflow. Load before adding/renaming/moving brands, changing a
+  spec/relation/category, editing docs, or judging "is CI enough". In-repo maintenance guide:
+  docs/guides/maintenance.md. Specialized procedures: references/{intake,rename,ssot-sync,
   audit,spec-change}.md.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
 metadata:
   hermes:
-    tags: [Oasisic-Icons, icons, SSOT, brands-json, resolver, ecosystem, asset-model, change-propagation, docs, ci, github]
+    tags: [Oasisic-Icons, icons, SSOT, brands-json, resolver, ecosystem, asset-model, mask-exemption, json-io, mutation-matrix, change-propagation, docs, ci, github]
     category: github
     related_skills: [static-repo-restructure, logo-render, mihomo-rules-icon-sync, mihomo-icon-cross-repo-sync]
 ---
@@ -39,6 +41,7 @@ metadata:
 
 ## 2. SSOT
 - `config/brands.json` + `config/categories.json` 是唯一事实来源。
+- **JSON 读取唯一入口是 `scripts/json_io.py`**：`load_json()` 失败抛 `JsonLoadError(path, reason, line, col)`（绝不返回空数据），`describe(exc, what)` 给「路径 + 行列 + 原因」单行诊断，`read_json_or_exit()` 供 CLI 一键转 exit 1。`load_json` 只保证**合法 JSON**，不保证 schema——**结构校验仍由各脚本自己显式做**（如 `isinstance(doc.get("brands"), list)`，非法即 SystemExit），`doc.get("brands", [])` 式默认值禁止（数据缺失 ≠ 空数据）。新增脚本读任何 JSON 一律走 json_io，不裸 `json.loads`。
 - `category`（一级物理分类）与 `parent_brand`（immediate parent）**互相独立**，禁止互相推导。
 - Generated artifacts 不得反向成为 SSOT。repo 内事实 = config/*.json + 代码 + git 历史；文档只是派生物或人工参考。
 
@@ -77,6 +80,7 @@ metadata:
   `pending` ⇒ 仅生态根，允许无 `icon_path`（官方资产不可得的合法临时态，拿到正式资产后同批转 official）。
 - 复用仓库共享 normalizer / 掩码（`scripts/normalize-icons.py` 的 `render()`/`rounded_mask()`），不要手搓掩码数学（同一 maths 手搓版会引入角点/抗锯齿漂移）。
 - 同一图像内容不得服务两个品牌（CI SHA-256 唯一性拦截）；重压缩走 `optimize-icons.py` 等**无损**路径，不做有损量化/降色。
+- **Rounded mask 边界**：CI 按「四角外 alpha 必须为 0」校验 canonical 形状；已知历史越界资产在 `config/icon-mask-exemptions.json` 显式登记（含实测越界 px 数与原因）——未登记的越界 = FAIL，登记值与实测不符 / 资产已合规 / 文件不存在同样 FAIL。**修复资产（重新规范化）后必须同步删除对应条目**——豁免表不允许腐烂。
 - 具体处理数字与自检见 `references/intake.md`。
 
 ## 8. Change Propagation Protocol（核心规则）
@@ -165,10 +169,23 @@ generate-brand-glossary / update-readme-badges 等）必须**幂等**（连续�
 ## 12. Validation
 - 提交前全绿：`ci-validate-icons.py`（组数以脚本输出为准）＋ `ci-validate-docs.py` ＋
   `python -m unittest discover -s tests` ＋ `git diff --check`；生成器幂等两轮 0 diff；工作区 clean；分支 + PR。
+- **`tests/test_mutation_matrix.py` 是闸门健全性证据**：对仓库副本注入 32 种已知坏状态，
+  逐例断言校验器（必要时含生成器）非 0 退出**并报出对应归因**——回答「CI 真的会红吗」，
+  而不是「CI 是绿的吗」（绿屏正是静默 no-op 的藏身处）。改校验逻辑后必须跑它。
 - CI 只证明结构一致性（SSOT schema、关系、物理路径、生成物一致、图像规范、唯一性、生态双向阈值、
-  Review Queue schema、文档 concrete path）；不能证明现实归属正确 / 官方资产真实 / 被删资产是否有用户价值。
+  Review Queue schema、文档 concrete path、圆角 mask 边界、质量统计）；不能证明现实归属正确 / 官方资产真实 / 被删资产是否有用户价值。
 - 别把 CI 绿灯当语义正确，也别把「无法自动化」当必须重构。
 - 变更模型后除跑 validator 外**必须跑全套 unittest**（模型变化会打破 pinned 测试语义而非 validator——同 commit 迁移 assertion，不删除测试）。
+- **校验器诊断文案变更 = 测试契约变更**：pinned 断言钉的是归因字符串，文案统一（如 JSON 加载
+  失败统一为「<what> 解析失败: <path> — <原因>」）后必须同 commit 迁移断言锚点；锚点要**自证落地**
+  （如 replace 断言锚点存在、badge 锚点按当前值动态定位），锚点过期应报错而非让用例空转。
+- **SSOT 故障要 fail-fast 且归因干净**：`ci-validate-icons.py --strict` 在 SSOT 不可解析时以统一
+  诊断立即 exit 1（不留半套结果、不倒 traceback）；非 strict 路径靠 `CATS_LOADED / BRANDS_LOADED`
+  级联抑制——下游组不做级联推断，只报「跳过 …（原因见 Category / Brands SSOT 组）」，避免一次语法错
+  被放大成数百条派生伪错误。任何脚本的 try 范围必须覆盖到**写入前的最后一次 SSOT 读取**
+  （写入发生在读取之后 ⇒ 抛错时不会半写），漏掉中间读取点会漏出裸 Traceback。
+- 仓库内有 `docs/guides/maintenance.md`（事实模型 / 最短新增路径 / 派生生成顺序 / 排障速查 / 已知边界），
+  面向长期维护者；Skill 与它不互为第二真相——冲突时以仓库脚本与 SSOT 实况为准。
 
 ## 13. Standard Workflows（专项入口）
 - 图片入库 → `references/intake.md`（512 RGBA r=115 处理、置名、批推纪律、回读校验、坑）
