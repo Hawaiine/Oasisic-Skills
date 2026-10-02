@@ -17,7 +17,7 @@
 | 🤖⚙️ hermes-config-expert | 严格、可验证、可回滚的 Hermes Agent 配置工作流规范 / Strict, verifiable, and rollback-safe Hermes Agent configuration workflow | ✅ active | hermes, configuration, provider, mcp, security | `skills/hermes-config-expert/` |
 | 📖 mihomo-rules | mihomo/clash-meta RULE-SET 规则集仓库维护知识库 / Maintenance knowledge base for the mihomo/clash-meta RULE-SET repo | ✅ active | networking, proxy, ruleset, ci, python, sub-brand | [Hawaiine/mihomo-rules](https://github.com/Hawaiine/mihomo-rules) |
 | 🎨 oasisic-icons-maintainer | Oasisic-Icons 唯一 canonical 维护 Skill：SSOT / 关系引擎 / 物理路径 / 生态 / 资产模型 / rounded-mask 豁免登记 / json_io 统一加载 / Change Propagation / 文档纪律 / 验证门禁（含 32 例 mutation 矩阵），含 intake、rename、ssot-sync、audit、spec-change 专项流程 / Single canonical maintenance skill for Oasisic-Icons: SSOT, resolver, physical paths, ecosystem, asset model, rounded-mask exemption registry, unified json_io loading, change propagation, docs discipline, validation gates (incl. the 32-case mutation matrix) — with intake / rename / ssot-sync / audit / spec-change references | ✅ active | icons, oasisic-icons, ssot, brands-json, resolver, ecosystem, asset-model, mask-exemption, json-io, mutation-matrix, change-propagation, docs, ci, github | [Hawaiine/Oasisic-Icons](https://github.com/Hawaiine/Oasisic-Icons) |
-| 🏗️ openwrt-ci | OpenWrt 固件 CI/CD 最佳实践与可复用模板 / OpenWrt firmware CI/CD best practices and reusable templates | ✅ active | openwrt, ci, firmware, github-actions, nikki | [Hawaiine/oasisic-openwrt](https://github.com/Hawaiine/oasisic-openwrt) |
+| 🏗️ openwrt-ci | OpenWrt 固件 CI/CD 最佳实践与可复用模板 / OpenWrt firmware CI/CD best practices and reusable templates | ✅ active | openwrt, ci, firmware, github-actions, nikki | [Hawaiine/Oasisic-OpenWrt](https://github.com/Hawaiine/Oasisic-OpenWrt) |
 | 🥷 stealth-browser-automation | 反爬虫隐身浏览器实战手册：源码级补丁 Chromium 突破 Cloudflare/Turnstile/FingerprintJS / Anti-bot stealth browser playbook: source-patched Chromium for Cloudflare/Turnstile/FingerprintJS | ✅ active | browser, automation, scraping, anti-bot, cloudflare | `skills/stealth-browser-automation/` |
 | 🧭 travel-itinerary-planner | 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书 / Turn travel wishes into verified, reconcilable itineraries and interactive HTML roadbooks | ✅ active | travel, itinerary, roadbook, budget, self-drive, openstreetmap | `skills/travel-itinerary-planner/` |
 <!-- SKILLS-TABLE:END -->
@@ -114,7 +114,7 @@ Oasisic-Skills/
 | 上游仓库 | 内容 |
 |----------|------|
 | [Hawaiine/mihomo-rules](https://github.com/Hawaiine/mihomo-rules) | mihomo / clash-meta RULE-SET 规则集与日更管线 |
-| [Hawaiine/oasisic-openwrt](https://github.com/Hawaiine/oasisic-openwrt) | OpenWrt 固件工程与构建流水线 |
+| [Hawaiine/Oasisic-OpenWrt](https://github.com/Hawaiine/Oasisic-OpenWrt) | OpenWrt 固件工程与构建流水线 |
 | [Hawaiine/Oasisic-Icons](https://github.com/Hawaiine/Oasisic-Icons) | 品牌图标资源 |
 | [Hawaiine/Oasisic-IPTV](https://github.com/Hawaiine/Oasisic-IPTV) | 公开 IPTV 源采集 |
 

@@ -1,8 +1,8 @@
 # 🏗️ OpenWrt CI Skill
 
-> OpenWrt 固件构建 CI/CD 最佳实践 —— 从 [Oasisic OpenWrt](https://github.com/Hawaiine/oasisic-openwrt) 实战提炼
+> OpenWrt 固件构建 CI/CD 最佳实践 —— 从 [Oasisic OpenWrt](https://github.com/Hawaiine/Oasisic-OpenWrt) 实战提炼
 
-[![build](https://github.com/Hawaiine/oasisic-openwrt/actions/workflows/openwrt-auto-build.yml/badge.svg)](https://github.com/Hawaiine/oasisic-openwrt/actions/workflows/openwrt-auto-build.yml)
+[![build](https://github.com/Hawaiine/Oasisic-OpenWrt/actions/workflows/openwrt-auto-build.yml/badge.svg)](https://github.com/Hawaiine/Oasisic-OpenWrt/actions/workflows/openwrt-auto-build.yml)
 [![OpenWrt](https://img.shields.io/github/v/release/openwrt/openwrt?logo=openwrt&label=OpenWrt&color=00b4ff)](https://openwrt.org)
 [![Nikki](https://img.shields.io/github/v/release/nikkinikki-org/OpenWrt-nikki?logo=go&label=Nikki&color=ff6600)](https://github.com/nikkinikki-org/OpenWrt-nikki)
 
@@ -59,7 +59,7 @@ bash scripts/gen-feeds-conf.sh v25.12.5 v1.26.1 | tail -1       # 必须含 ;
 
 ## 参考实现
 
-- 工程仓库：https://github.com/Hawaiine/oasisic-openwrt  
+- 工程仓库：https://github.com/Hawaiine/Oasisic-OpenWrt  
 - 文档与 Release **以该仓库当前 `main` / Releases 为准**（可能清空重建，勿死链旧 tag）  
 - 关键修复提交示例：`75a011b`（feeds `^SHA`）、`a4efa24`（dispatch + persist + 短 Release）
 

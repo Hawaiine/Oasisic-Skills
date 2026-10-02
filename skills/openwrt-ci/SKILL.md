@@ -1,6 +1,6 @@
 ---
 name: openwrt-ci
-description: "Use when maintaining OpenWrt firmware CI/CD (GitHub Actions SDK builds, feeds pin, last_build dedupe, QEMU smoke, Release/minisign) — especially Hawaiine/oasisic-openwrt style pipelines. Encodes OpenWrt ; vs ^ feeds syntax, dispatch force_build/nikki_ref, and verified failure/success runs."
+description: "Use when maintaining OpenWrt firmware CI/CD (GitHub Actions SDK builds, feeds pin, last_build dedupe, QEMU smoke, Release/minisign) — especially Hawaiine/Oasisic-OpenWrt style pipelines. Encodes OpenWrt ; vs ^ feeds syntax, dispatch force_build/nikki_ref, and verified failure/success runs."
 version: 2.0.0
 author: Hermes Agent
 license: MIT
@@ -13,7 +13,7 @@ metadata:
 
 # OpenWrt CI Skill
 
-从 [Oasisic OpenWrt](https://github.com/Hawaiine/oasisic-openwrt) 实战提炼的固件 CI/CD 知识与模板。  
+从 [Oasisic OpenWrt](https://github.com/Hawaiine/Oasisic-OpenWrt) 实战提炼的固件 CI/CD 知识与模板。  
 目标：搭流水线、审 PR、查失败 run 时行为一致，避免把「文档写过」当成「构建已通」。
 
 **模板目录：** `templates/`（workflow / gen-feeds / gen-config / 向导与 CGI 片段）  
@@ -155,9 +155,9 @@ Updating feed 'nikki' from '…git;f06b6b448928…'
 fatal: Remote branch f06b6b448928501e7511bdfb3497b1186d919316 not found
 ```
 
-- 失败 run：`https://github.com/Hawaiine/oasisic-openwrt/actions/runs/30098510806`  
+- 失败 run：`https://github.com/Hawaiine/Oasisic-OpenWrt/actions/runs/30098510806`  
 - 修复提交：`75a011b`  
-- 成功 pin 构建：`https://github.com/Hawaiine/oasisic-openwrt/actions/runs/30107519212`
+- 成功 pin 构建：`https://github.com/Hawaiine/Oasisic-OpenWrt/actions/runs/30107519212`
 
 **check-upstream 绿 ≠ feeds 对。**
 
