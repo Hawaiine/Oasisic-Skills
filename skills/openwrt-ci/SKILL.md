@@ -63,18 +63,23 @@ openwrt-firmware/
 
 ---
 
-## 二、流水线（五阶段）
+## 二、流水线（八个任务，正式构建与 PR 验证共用）
 
 ```
-check-upstream → build → qemu-smoke-test → release → persist-last-build
+lint ─ check-upstream ─ build ─ qemu-smoke-test ─┬─ release ── persist-last-build
+                                                 ├─ ci-prerelease（仅 PR）
+                                                 └─ notify-failure（任一步失败时）
 ```
 
 | Job | 职责 | 完成标准 |
 |-----|------|----------|
-| check-upstream | 解析 OWRT latest tag、Nikki ref→完整 SHA；算 composite；should_build | outputs 含 `should_build` / `nikki_sha` / `nikki_short_sha` |
-| build | 冷/热编译、签名、自检、上传 artifact | artifact 含镜像与 sha256sums（及 minisig） |
-| qemu-smoke-test | 启动固件，LuCI 200 + JS 非 gzip 垃圾 | 失败则阻断 release |
-| release | softprops 发 Release + Discord | tag 含 nikki 短 SHA；files 含 minisig |
+| lint | `bash -n` / `py_compile` / workflow YAML / feeds 分隔符契约 | 几分钟内出结果，PR 必跑 |
+| check-upstream | 解析 OWRT latest tag、Nikki ref→完整 SHA；算 composite；should_build；输出 `artifact_name` | outputs 含 `should_build` / `nikki_sha` / `nikki_short_sha` / `artifact_name` |
+| build | 冷/热编译、签名、自检、上传 artifact | artifact 含镜像与 sha256sums（及 minisig）；PR 件名带 `-pr<号>` |
+| qemu-smoke-test | 启动固件，LuCI 200 + JS 非 gzip 垃圾 | 失败则阻断 release；qemu/OVMF 缺失要**硬失败**，别静默跳过 |
+| release | softprops 发 Release + Discord 成功卡片 | tag = `<ver>-n<shortsha>`；files 含 minisig |
+| ci-prerelease | PR 构建产物发 `ci-<ver>-pr<n>-r<run>` prerelease | `prerelease: true`、`make_latest: false` |
+| notify-failure | 失败卡片：失败任务 + 失败步骤 + 日志链接 | `if: failure()`，`continue-on-error: true` |
 | persist-last-build | 回写 composite 到仓库 | commit 含 `[skip ci]`；main 可推 |
 
 ### needs 链
@@ -96,7 +101,14 @@ workflow_dispatch:
       description: 'Nikki ref（tag/branch/sha，空=latest tag）'
       type: string
       default: ''
+    runner_image:
+      description: 'Runner 镜像（空=仓库变量 RUNNER_IMAGE，再空=ubuntu-26.04）'
+      type: string
+      default: ''
 ```
+
+三段回退：`inputs.runner_image || vars.RUNNER_IMAGE || 'ubuntu-26.04'`。
+要对比验证另一镜像时不用改 main，dispatch 时填即可。
 
 UI 上 `force_build` 是**勾选**，不是下拉。
 
@@ -179,9 +191,9 @@ fatal: Remote branch f06b6b448928501e7511bdfb3497b1186d919316 not found
 
 ## 五、Release 与签名
 
-- `tag_name: oasisic-${owrt_ver_safe}-nikki-${nikki_short_sha}`  
+- `tag_name: ${owrt_ver_safe}-n${nikki_short_sha}`（例 `25.12.6-n31339d5`）；**不要**带 `oasisic-` 前缀和 `-nikki-`，两个都是冗余  
 - `files:` 必须包含 `sha256sums.minisig`（若签名步骤生成）  
-- Release 正文：OpenWrt 版本、Nikki **ref**、包版本（可能仍显示 tag 名）、内核、**随机 root 密码**  
+- Release 正文用两行区分身份：`Nikki 版本`（取自产物包文件名，是编进固件的包版本）+ `Nikki 提交 31339d5（ref: v1.26.2）`（实际拉取的源码提交，括号里保留 ref 原文，tag/分支/sha 三种 pin 都不歧义）  
 - Discord：`notify-discord.py`；`env` 里不要写 shell `$(date)` 指望展开，在 `run:` 内赋值  
 
 Secrets：`MINISIGN_SECRET_KEY` / `MINISIGN_KEY_ID` / `MINISIGN_PASSWORD`；`DISCORD_BOT_TOKEN`。
@@ -260,6 +272,57 @@ LAN DHCP 客户端；IPv6 RA/DHCPv6/NDP 默认关（旁路场景）。hostname �
 4. 等五阶段结束 → Releases 下载  
 
 ---
+
+## 九·四、Runner 镜像迁移（ubuntu-latest → 26.04，2026-10）
+
+GitHub 于 2026-10-19 起把 `ubuntu-latest` 分批迁到 Ubuntu 26.04（runner-images#14748，11-19 完成），窗口期内镜像**随机漂移**。对策：显式固定镜像，别用 `latest`。
+
+26.04 实测差异（探针 + 真实构建验证）：
+
+| 项 | 24.04 | 26.04 |
+|---|---|---|
+| gcc | 13 | **15.2.0** |
+| python | 3.12 | 3.14 |
+| `qemu-system-x86-64` 包 | 有 | **已删除** → 改 `qemu-system-x86`（二进制名不变） |
+| `libncurses5-dev` / `w` | 有 | 无正式包 → `libncurses-dev` |
+| OVMF 路径 | `/usr/share/OVMF/OVMF_CODE_4M.fd` | 同 |
+| OpenWrt tools/install | ✅ | ✅（gcc 15 下可编） |
+
+**必踩的坑**：qemu 安装写 `|| true` 会静默吞错 → OVMF 找得到、qemu 缺二进制、300s 超时后才失败，日志误导。改成按序回退 + `command -v` 硬校验。
+
+**缓存**：换镜像必须把镜像维度写进 ccache / source-tree 的 cache key，否则命中旧镜像的 `staging_dir/host`，报 `staging_dir/host/bin/python3: No such file or directory` → `package/system/apk [host] failed`。
+
+## 九·四·五、60 天停用的防呆：每周心跳
+
+GitHub 规则：公开仓库 60 天无提交活动 → 所有 schedule 工作流被自动停用。只在上游有新版本时才有 persist 提交的仓库，上游长期不发版就会中招。
+
+**仓内心跳（主）**：`.github/workflows/keepalive.yml`
+
+```yaml
+on:
+  schedule: [{cron: '0 3 * * 1'}]     # 每周一 UTC 03:00
+  workflow_dispatch:
+permissions: {contents: write, actions: write}
+```
+
+- 提交 `.github/keepalive` 时间戳，commit 带 `[skip ci]` → 每周制造一次活动，计时器持续归零
+- 同一 job 再查 `/actions/workflows`，发现 `state != active` 就 `PUT /actions/workflows/{id}/enable`
+- 心跳自身靠"每周提交"维持活跃，不会被自己的规则停掉；若它连续失败 60 天才需要人工
+- 外部看门狗（本机 cron 检查并补提交）**只能当兜底**：本机可能停机
+
+## 九·五、试编后回滚（验证构建 → 让定时自己编）
+
+用户要求「先手动跑一次确认能编，然后把这次 Release / run 记录删掉，等定时流水线自己出包」：
+
+1. 删 Release + tag：`DELETE /releases/{id}`、`DELETE /git/refs/tags/{tag}`
+2. 删 run：`DELETE /actions/runs/{id}`（日志/artifact 一并清）
+3. 回退去重键：`PATCH /git/refs/heads/main {"sha": "<baseline>", "force": true}` —— 指向该次 persist 提交的父提交，等效撤销那条 `chore: 更新 last_build_version [skip ci]`，不新增提交
+4. 5 分钟后回读：main tip / `last_build_version` / releases / runs
+
+坑：
+- **删 Release 或 run 都不会让去重失效**；不动 `last_build_version` 就永远不会自动重编。
+- 必须等 run `completed`（persist 在 build 之后才 push）。
+- 回退前确认 main 无保护/无 ruleset，且 tip 仍是那条自动提交。
 
 ## 十、常见陷阱（精简表）
 
