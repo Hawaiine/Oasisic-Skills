@@ -30,7 +30,7 @@ Oasisic-Skills 是一个 **Hermes Agent 技能合集仓库**：每个 Skill 独�
 
 - 🤖⚙️ **Hermes 配置** —— Provider / Model / MCP 的改动闭环（官方资料 → 三件套备份 → 修改 → 验证 → 脱敏 → PR）
 - 📖 **mihomo 规则集** —— mihomo / clash-meta RULE-SET 仓库的日更管线与校验纪律
-- 🏗️ **OpenWrt 固件 CI** —— 五阶段固件流水线、feeds pin、签名与 Release 规范
+- 🏗️ **OpenWrt 固件 CI** —— 八任务固件流水线（含 PR 验证与失败通知）、feeds pin、签名与 Release 规范
 - 🥷 **反爬浏览器** —— 源码级补丁 Chromium 穿过 Cloudflare / Turnstile / FingerprintJS
 - 🧭 **行迹旅行路书** —— 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书
 - 🎨 **图标仓库维护** —— Oasisic-Icons 的 SSOT / 关系引擎 / 资产模型 / 文档纪律与验证门禁

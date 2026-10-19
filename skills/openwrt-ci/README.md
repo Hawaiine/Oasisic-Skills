@@ -23,19 +23,25 @@
 ## 现行流水线（与 oasisic-openwrt 对齐）
 
 ```
-check-upstream → build → qemu-smoke-test → release → persist-last-build
+lint ─ check-upstream ─ build ─ qemu-smoke-test ─┬─ release ── persist-last-build
+                                                 ├─ ci-prerelease（仅 PR）
+                                                 └─ notify-failure（失败兜底）
 ```
 
 | 能力 | 现状 |
 |------|------|
-| 定时 | UTC 06:00 / 北京 14:00 检测上游 |
-| 手动 | `force_build` + `nikki_ref`（Tag / 分支 / 短或完整 SHA） |
+| 定时 | UTC 06:00 / 北京 14:00 检测上游（GitHub 排队常延后到 UTC 10–14） |
+| 手动 | `force_build` + `nikki_ref`（Tag / 分支 / 短或完整 SHA）+ `runner_image` |
+| PR 验证 | 改 workflow/scripts/files/feeds 自动跑 `lint`；打 `ci:full-build` 标签才全量编译，产物走 `ci-*` prerelease |
+| Runner | 固定 `ubuntu-26.04`（26.04 无 `qemu-system-x86-64` 包，改 `qemu-system-x86`；ncurses 用 `libncurses-dev`） |
 | Nikki 默认 | 最新 Release Tag |
 | feeds 钉 Commit | **`url^完整40位SHA`**（禁止 `url;SHA`） |
 | composite | `${OWRT_TAG}_nikki-${NIKKI_SHA}` |
-| Release 标签 | `oasisic-{ver}-nikki-{shortsha7}` |
+| Release 标签 | `{ver}-n{shortsha7}`，例 `25.12.6-n31339d5` |
 | 签名 | minisign → `sha256sums.minisig` 进 Release |
 | 去重 | `persist-last-build` 回写 `last_build_version`（`[skip ci]`） |
+| 保活 | `keepalive.yml` 每周提交一次，防 60 天无活动被停用 |
+| 缓存 | ccache / 源码树 key 含**镜像维度**；恢复后自检 host 工具链 |
 
 **P0 教训：** check-upstream 绿 ≠ feeds 对。把完整 SHA 写成 `;SHA` 会在「配置 feeds」失败（run `30098510806`）。改 `^SHA` 后 pin 构建可全绿（run `30107519212`）。
 
