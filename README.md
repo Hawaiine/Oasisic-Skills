@@ -3,7 +3,7 @@
 ### Hermes Agent Skills Monorepo · Oasisic 技能合集
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-6-blueviolet.svg)](#-技能清单)
+[![Skills](https://img.shields.io/badge/Skills-7-blueviolet.svg)](#-技能清单)
 [![README Check](https://github.com/Hawaiine/Oasisic-Skills/actions/workflows/readme-check.yml/badge.svg)](https://github.com/Hawaiine/Oasisic-Skills/actions/workflows/readme-check.yml)
 
 > 🇨🇳 **一套仓库，集中维护 Hawaiine 的 Hermes Agent Skills。**
@@ -20,16 +20,18 @@
 | 🏗️ openwrt-ci | OpenWrt 固件 CI/CD 最佳实践与可复用模板 / OpenWrt firmware CI/CD best practices and reusable templates | ✅ active | openwrt, ci, firmware, github-actions, nikki | [Hawaiine/Oasisic-OpenWrt](https://github.com/Hawaiine/Oasisic-OpenWrt) |
 | 🥷 stealth-browser-automation | 反爬虫隐身浏览器实战手册：源码级补丁 Chromium 突破 Cloudflare/Turnstile/FingerprintJS / Anti-bot stealth browser playbook: source-patched Chromium for Cloudflare/Turnstile/FingerprintJS | ✅ active | browser, automation, scraping, anti-bot, cloudflare | `skills/stealth-browser-automation/` |
 | 🧭 travel-itinerary-planner | 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书 / Turn travel wishes into verified, reconcilable itineraries and interactive HTML roadbooks | ✅ active | travel, itinerary, roadbook, budget, self-drive, openstreetmap | `skills/travel-itinerary-planner/` |
+| 🎨🧪 web-design-core | 网页 / UI / 落地页任务的强制设计流程：Design Brief + 实测 Token 规范 + lint 脚本 + 7 站实测拆解 / Mandatory design workflow for any web/UI/landing-page task: Design Brief, measured token specs, lint script, and 7-site live teardowns | ✅ active | frontend, design, landing-page, tokens, typography, color, css, ui, lint | `skills/web-design-core/` |
 <!-- SKILLS-TABLE:END -->
 
 ## 📖 这是什么
 
 Oasisic-Skills 是一个 **Hermes Agent 技能合集仓库**：每个 Skill 独立自洽、可单独安装，同时共享同一套目录规范、元数据与文档生成工具链。
 
-目前收录 6 个 Skill，覆盖六条主线：
+目前收录 7 个 Skill，覆盖七条主线：
 
 - 🤖⚙️ **Hermes 配置** —— Provider / Model / MCP 的改动闭环（官方资料 → 三件套备份 → 修改 → 验证 → 脱敏 → PR）
 - 📖 **mihomo 规则集** —— mihomo / clash-meta RULE-SET 仓库的日更管线与校验纪律
+- 🎨🧪 **网页 UI 设计核心** —— 网页 / UI / 落地页任务的强制设计流程：Design Brief + 实测 Token 规范 + lint 脚本 + 7 站实测拆解
 - 🏗️ **OpenWrt 固件 CI** —— 八任务固件流水线（含 PR 验证与失败通知）、feeds pin、签名与 Release 规范
 - 🥷 **反爬浏览器** —— 源码级补丁 Chromium 穿过 Cloudflare / Turnstile / FingerprintJS
 - 🧭 **行迹旅行路书** —— 把旅行意愿变成可核验、可对账的行程与交互式 HTML 路书

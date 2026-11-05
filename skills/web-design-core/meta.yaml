@@ -1,0 +1,11 @@
+name: web-design-core
+short_name: "网页 UI 设计核心"
+title: "🎨🧪 web-design-core"
+summary_zh: "网页 / UI / 落地页任务的强制设计流程：Design Brief + 实测 Token 规范 + lint 脚本 + 7 站实测拆解"
+summary_en: "Mandatory design workflow for any web/UI/landing-page task: Design Brief, measured token specs, lint script, and 7-site live teardowns"
+status: active
+version: "1.0.0"
+upstream_repo: ""
+source_note: "基于 landingfolio 320 条版式样本 + designprompts 21 种风格规格 + refero 12 份 DESIGN.md 实测数据构建"
+last_updated: "2026-11-06"
+tags: [frontend, design, landing-page, tokens, typography, color, css, ui, lint]
