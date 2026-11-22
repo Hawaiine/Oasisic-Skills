@@ -29,6 +29,7 @@ license: MIT
 | 动效/交互 | `references/motion.md` | 缓动/时长/滚动 |
 | 组件库选型 | `references/component-systems.md` | Semi/Ant/Element/shadcn |
 | 真实案例 | `teardowns/*.md` | 7 站实测拆解 |
+| 交付前验收 | `references/verify-loop.md` | **改版/新站必读**：不看图也能判对错的运行态数字 |
 
 加载：`skill_view('web-design-core', file_path='references/anti-patterns.md')`（必读）。`teardowns/` 文件用 skill_view 的 `file_path='teardowns/pear.md'` 格式读取。
 
@@ -80,6 +81,8 @@ bash /opt/data/skills/creative/web-design-core/scripts/lint_design.sh <项目目
 
 **9 项自动检查**：紫蓝渐变、裸 sans-serif、emoji 图标、统一圆角、纯白底、纯黑字、玻璃拟态滥用、滚动劫持、全大写+负字距。
 
+**运行态验收（`references/verify-loop.md`）**：lint 只查源码，查不出「点了没反应 / 手机压扁 / 选错元素 / 白屏」。改版与新站必须在 1440×900 和 390×844 两个视口各跑一遍同一组数字并贴出来：`ovf`（横向溢出，必须 0）、`docH`、非同源请求数（必须 0）、关键列表行数、reveal 元素命中数。四个已知静默失败陷阱（`.hide!important` 盖内联样式、IntersectionObserver 无兜底、固定 viewBox 图表、`:nth-of-type` 选错卡片）在该文件里各有判法与修法。
+
 **改脚本后必测三组输入**：干净夹具 → exit 0；违规夹具 → exit 1 且逐条打印「文件:行号」；空目录 → exit 0。只测一组会把「静默跳过」误当成「通过」。脚本内所有 `$(grep … | wc -l)` 计数必须 `|| true` 并以 `${VAR:-0}` 兜底——`set -euo pipefail` 下「零匹配」是正常业务情况却会让脚本中途退出，后续检查全部不执行。
 
 **多档检查要认变量**：圆角/字号这类「是否分两档」的判断必须同时统计字面值（`border-radius: 6px`）和变量定义（`--radius-control: 6px`）——规范本身就推荐用变量，只认字面值会把正确实现读成「无圆角」。加第二个计数器时用精确比较（`-eq 1 && -eq 0`），不要写 `-le 1`：空目录两项计数都是 0，`<=1` 会把它判成违规，这正是空目录夹具守的那条回归。
@@ -97,6 +100,7 @@ bash /opt/data/skills/creative/web-design-core/scripts/lint_design.sh <项目目
 - [ ] CJK 正文行高 ≥1.7
 - [ ] 字阶用 1.125 或 1.2
 - [ ] Brief 中列出了引用的 reference 条目
+- [ ] 运行态数字已贴出（桌面 + 手机两视口，ovf=0、外链=0），见 `verify-loop.md`
 
 ### ④ 多方案任务：先定差异轴，再写代码
 
@@ -139,3 +143,4 @@ js("(() => { const b=getComputedStyle(document.body), h=document.querySelector('
 ## 更新日志
 
 - **2026-11-06**：初版，整合 patterns.md + component-systems.md + 7 站拆解。
+- **2026-11-22**：新增 `references/verify-loop.md`（运行态验收回路 + 4 个静默失败陷阱），并把运行态数字纳入强制自检与交付清单。
