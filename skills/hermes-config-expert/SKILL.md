@@ -313,7 +313,7 @@ fi
 
 # 验证配置语法 / Validate config syntax
 hermes config check
-# 确认 Provider 可见 / Confirm Provider is visible
+# 确认 Provider 可见 / Confirm Provider is visible（无 TTY 时见「每一步完成必须验证」第 5 步的等价回读）
 hermes model
 ```
 
@@ -653,6 +653,10 @@ tail -n 30 /opt/data/logs/gateway.log | grep '✓ discord connected'
 
 5. hermes model
    确认 Provider 在 Hermes 内可见
+   无 TTY 的 agent / 脚本会话里这条会拒绝执行（requires an interactive terminal）；
+   改用三步等价证明：`hermes config get model`、`hermes -z "只回复ok"`、
+   以及 `state.db` 的 `sessions` 最新行（`model` + `billing_base_url` 必须指向目标 provider）。
+   详见 skill `hermes-custom-provider-models` 的 provider 改动验证链。
 
 6. 如果当前版本支持：
    hermes doctor
@@ -718,7 +722,7 @@ API Probe 返回非 200 时，按以下分级处理：
 | 200   | ✓ 正常         | 继续                                                 |
 | 400   | 请求格式错误    | 检查 model 名称、请求体格式是否符合该 Provider 规范    |
 | 401   | 认证失败        | API Key 无效、过期或格式错误；从官方控制台重新获取      |
-| 403   | 权限不足        | Key 无对应模型的访问权限；检查 Provider 账户权限       |
+| 403 | 权限不足或额度耗尽 | 先读响应体：文案含「余额/额度不足」且全家模型同报 = 可恢复的账户状态，别删 key 也别删 provider（见 hermes-provider-retirement）；确属权限不足才查账户权限       |
 | 404   | 地址不存在      | base_url 或路径错误；从官方文档确认最新 endpoint       |
 | 422   | 参数不合法      | model 名称不在该 Provider 可用列表中                  |
 | 429   | 触发限流        | 降低请求频率；检查 Key 配额；等待后重试（见下方策略）   |
@@ -779,7 +783,7 @@ Docker 环境中需要宿主机执行的步骤，明确标注「请用户在宿�
 ✓ YAML 校验
 ✓ JSON 校验
 ✓ API Probe（HTTP 200）
-✓ hermes model
+✓ hermes model（headless：config get model + `hermes -z` + state.db 归属）
 ✓ hermes doctor（若支持）
 
 全部通过以后，才能继续。
@@ -810,7 +814,7 @@ Docker 环境中需要宿主机执行的步骤，明确标注「请用户在宿�
 - [ ] python3 -m json.tool auth.json 验证 JSON 格式
 - [ ] hermes config check 验证 YAML 语法
 - [ ] API Probe 验证 key 和 endpoint 有效（期望 HTTP 200）
-- [ ] hermes model 确认 provider 可见
+- [ ] hermes model 确认 provider 可见（headless 会话改用 config get model + `hermes -z` + state.db 归属）
 - [ ] Docker 环境：告知用户执行 docker compose restart `<service-name>`
 - [ ] 验证全部通过后，清理本次任务产生的临时脚本和临时文件
 - [ ] Hermes 升级后已查官方文档与 GitHub 仓库，核对变更与 Breaking Changes
@@ -1001,6 +1005,7 @@ Hermes Agent 仍以为当前是 Provider A，状态已过期
 # Re-check the currently active Provider and Model (don't use cached state)
 hermes model
 ```
+（无 TTY 时见「每一步完成必须验证」第 5 步的等价回读。）
 
 然后：
 
@@ -1431,6 +1436,8 @@ Hermes Agent 的上下文窗口（对话历史）有长度限制。
 - fallback_providers 中是否还引用了旧 model 名称
 - `providers` 字典中该 provider 的 `default_model` / `models` 是否需要同步更新
 - 如有残留旧 model 名称，一并更新或删除
+- **从内联端点切到 `providers` 字典里的 provider 时，`model.base_url` 和 `model.api_key` 都必须清空为 `''`**：端点与 key 已由 `providers.<key>.api` / `key_env` 提供，残留旧值会让请求绕过网关直连老上游。`hermes config set model.provider <key>` 只做嵌套赋值，**不会**自动清 `base_url`，也**不会**清 `api_key`（源码 `hermes_cli/config.py:3153 set_config_value`），两个都要显式 `config set … ''`。
+- 验收用 `state.db` 最新 session 的 `billing_base_url` 确认确实走新网关，别只看 config 回读。
 
 ## 移除 fallback_providers 条目时
 

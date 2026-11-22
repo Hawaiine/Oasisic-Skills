@@ -16,6 +16,8 @@
 - 输出恰为 **512×512 RGBA**，圆角 **r=115**（本类用 115，不是某些旧文档引用的 99；以 normalize-icons.py 常量为准），四角透明。
 - **保留原始底色**：白底保持白，只把四角变透明；不得误把白底擦成透明（白底是资产的一部分）。
 - 源 > 512 → LANCZOS 缩到 512；源已是 512 → 只加角掩码。
+- **源短边 < 256 不要 LANCZOS 放大入库**：把 16/32px favicon 放大到 512 只会得到更大的糊图，而尺寸自检（512×512、四角 alpha=0）会全部通过——这是一类「校验全绿但资产是垃圾」的假合格。正确顺序：① 官方矢量（simple-icons `https://cdn.simpleicons.org/<slug>`、品牌官网 SVG/logo 下载页）在浏览器里以 512×512 viewport 渲染再掩码；② 官方高清 PNG（品牌 press kit）；③ 都拿不到就按 `icon_status: pending` 或如实告知用户「只有 16px 源，要清晰请给矢量图」，不要用放大图充 official。
+- **矢量渲染出图后 PIL 报 `cannot identify image file` 先别判坏**：查 PNG 魔数与 IHDR（位深/颜色类型 6=RGBA）；实测多次是自己复用同一个 `BytesIO` 反复 `Image.open` 导致的，图本身正常。
 - **复用仓库 normalizer，不手搓掩码数学**：importlib 加载 `Oasisic-Icons/scripts/normalize-icons.py`，
   `render(im, rounded_mask())`。自己重写同一套数学就是角点/抗锯齿漂移的来源。
 - 存盘后 **oxipng 无损压缩**：`level=4, strip=StripChunks.safe(), optimize_alpha=True, color_type_reduction=False`
