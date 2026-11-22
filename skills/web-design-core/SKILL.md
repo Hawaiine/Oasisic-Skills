@@ -31,6 +31,7 @@ license: MIT
 | 真实案例 | `teardowns/*.md` | 7 站实测拆解 |
 | 交付前验收 | `references/verify-loop.md` | **改版/新站必读**：不看图也能判对错的运行态数字 |
 | 方向探索/多方案 | `references/visual-direction.md` | 北极星、模糊词翻译、三方向差异轴、独立评审口径 |
+| 要交付对比页 | `references/style-explorer.md` + `scripts/build_explorer.py` | 生成离线并排对比页（单文件、零外链） |
 
 加载：`skill_view('web-design-core', file_path='references/anti-patterns.md')`（必读）。`teardowns/` 文件用 skill_view 的 `file_path='teardowns/pear.md'` 格式读取。
 
@@ -103,7 +104,7 @@ bash /opt/data/skills/creative/web-design-core/scripts/lint_design.sh <项目目
 - [ ] Brief 中列出了引用的 reference 条目
 - [ ] 运行态数字已贴出（桌面 + 手机两视口，ovf=0、外链=0），见 `verify-loop.md`
 
-### ④ 多方案任务：先定差异轴，再写代码（细则见 `references/visual-direction.md`）
+### ④ 多方案任务：先定差异轴，再写代码（细则见 `references/visual-direction.md`；要并排交付对比页则用 `scripts/build_explorer.py`，用法见 `references/style-explorer.md`）
 
 一次交付多个「风格必须明显不同」的页面时，先选 ≥3 条差异轴写进各自 Brief：底色明暗（近黑 / 暖纸 / 暖白）、字体族类别（纯无衬线 / 衬线+无衬线双族 / 等宽点缀）、信息密度（16px 基准大留白 vs 14px 基准紧凑）。只换强调色不算不同风格。交付前用浏览器读 computed style 客观核验，不要靠肉眼：
 
@@ -146,3 +147,4 @@ js("(() => { const b=getComputedStyle(document.body), h=document.querySelector('
 - **2026-11-06**：初版，整合 patterns.md + component-systems.md + 7 站拆解。
 - **2026-11-22**：新增 `references/verify-loop.md`（运行态验收回路 + 4 个静默失败陷阱），并把运行态数字纳入强制自检与交付清单。
 - **2026-11-22**：新增 `references/visual-direction.md`（吸收 oil-ui 的判断层：北极星、模糊词→参数、三方向差异轴、独立评审口径），不含其脚本与素材。
+- **2026-11-22**：vendor `scripts/build_explorer.py` + `assets/style-explorer.html` + Instrument Serif(OFL)，新增 `references/style-explorer.md`；生成器去掉上游品牌资源与外链，已实测三候选/手机单列/Select 交互。
